@@ -1,0 +1,171 @@
+<!doctype html>
+<html lang="zh-tw">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>分數通擴約分工具</title>
+  <style>
+    :root{font-family: system-ui, -apple-system, "SF Pro Text", Hiragino Sans, PingFang TC}
+    body{padding:20px; background:#f7fafc; color:#111827}
+    .container{max-width:980px;margin:0 auto;background:#fff;padding:18px;border-radius:8px;box-shadow:0 6px 18px rgba(15,23,42,0.06)}
+    h1{font-size:20px;margin-bottom:6px}
+    .muted{color:#6b7280;font-size:13px}
+    .fraction-row{display:flex;gap:8px;align-items:center;padding:8px;border:1px solid #e5e7eb;border-radius:6px;margin-bottom:8px}
+    .fraction-row input{width:84px;padding:6px;border:1px solid #d1d5db;border-radius:4px}
+    .btn{padding:8px 12px;border-radius:6px;border:1px solid #d1d5db;background:#fff;cursor:pointer}
+    .btn-primary{background:#2563eb;color:#fff;border-color:transparent}
+    .btn-danger{color:#b91c1c;border-color:transparent}
+    .controls{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+    .result{margin-top:12px;padding:12px;border-radius:6px;border:1px dashed #e5e7eb;background:#fbfdff}
+    .grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+    .small{font-size:13px;color:#374151}
+    .note{font-size:13px;color:#6b7280;margin-top:10px}
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>分數通 / 擴 / 約 工具（純 HTML + JS）</h1>
+    <div class="muted">可新增任意多個分數，進行約分、通分、擴分，並自動把所有分數通分後加總並化簡。</div>
+
+    <div id="fractions" style="margin-top:12px"></div>
+
+    <div class="controls">
+      <button id="addBtn" class="btn btn-primary">新增分數</button>
+      <button id="simplifyAllBtn" class="btn">全部約分</button>
+      <button id="toCommonBtn" class="btn">通分（最小公倍數）</button>
+      <div style="display:flex;align-items:center;gap:6px">
+        <input id="expandFactor" type="number" value="2" style="width:86px;padding:6px;border-radius:4px;border:1px solid #d1d5db" />
+        <button id="expandBtn" class="btn">以此因子擴分</button>
+      </div>
+    </div>
+
+    <div class="result" id="resultArea">
+      <h3 style="margin:0 0 8px 0">通分結果與加總</h3>
+      <div id="commonDenomArea" class="small">尚未輸入分數。</div>
+      <div id="expandedList" style="margin-top:8px"></div>
+      <div id="sumArea" style="margin-top:8px"></div>
+    </div>
+
+    <div class="note">
+      使用提示：通分使用最小公倍數 (LCM)，約分使用最大公因數 (GCD)。若任何分母為 0，系統會提示請先修正。
+    </div>
+  </div>
+
+<script>
+(function(){
+  // Helper math functions
+  function gcd(a,b){ a=Math.abs(a); b=Math.abs(b); while(b){ const t=b; b=a%b; a=t;} return a; }
+  function lcm(a,b){ if(a===0||b===0) return 0; return Math.abs(a/gcd(a,b))*Math.abs(b); }
+  function normalize(num,den){ if(den===0) return {num:NaN,den:0}; if(den<0){num=-num;den=-den;} return {num,den}; }
+  function simplify(num,den){ num=Number(num); den=Number(den); if(!isFinite(num)||!isFinite(den)||den===0) return {num,den}; const g=gcd(num,den); const n=num/g; const d=den/g; return normalize(n,d); }
+
+  // State
+  let fractions = [ {id:1,num:1,den:2}, {id:2,num:1,den:3} ];
+  let nextId = 3;
+
+  // DOM
+  const fractionsEl = document.getElementById('fractions');
+  const addBtn = document.getElementById('addBtn');
+  const simplifyAllBtn = document.getElementById('simplifyAllBtn');
+  const toCommonBtn = document.getElementById('toCommonBtn');
+  const expandBtn = document.getElementById('expandBtn');
+  const expandFactorInput = document.getElementById('expandFactor');
+  const commonDenomArea = document.getElementById('commonDenomArea');
+  const expandedList = document.getElementById('expandedList');
+  const sumArea = document.getElementById('sumArea');
+
+  function renderFractions(){
+    fractionsEl.innerHTML = '';
+    fractions.forEach(f => {
+      const row = document.createElement('div');
+      row.className = 'fraction-row';
+      row.innerHTML = `
+        <div style="display:flex;flex-direction:column">
+          <label class="small">分子</label>
+          <input type="number" data-id="${f.id}" data-field="num" value="${f.num}" />
+        </div>
+        <div style="display:flex;flex-direction:column">
+          <label class="small">分母</label>
+          <input type="number" data-id="${f.id}" data-field="den" value="${f.den}" />
+        </div>
+        <div style="margin-left:8px">
+          <div class="small">原始： ${f.num}/${f.den}</div>
+          <div class="small">簡化： ${(() => { const s=simplify(f.num,f.den); return isNaN(s.num)||s.den===0 ? '—' : s.num + '/' + s.den; })()}</div>
+        </div>
+        <div style="margin-left:auto;display:flex;gap:8px">
+          <button class="btn" data-action="simplify" data-id="${f.id}">約分</button>
+          <button class="btn btn-danger" data-action="remove" data-id="${f.id}">移除</button>
+        </div>
+      `;
+      fractionsEl.appendChild(row);
+    });
+
+    // Attach events to inputs and buttons
+    fractionsEl.querySelectorAll('input[data-field]').forEach(inp => {
+      inp.addEventListener('change', (e)=>{
+        const id = Number(e.target.getAttribute('data-id'));
+        const field = e.target.getAttribute('data-field');
+        const val = e.target.value;
+        fractions = fractions.map(f=> f.id===id ? {...f, [field]: (val==='"'?'': Number(val))} : f );
+        // rerender summary only
+        computeAndRenderResult();
+      });
+    });
+
+    fractionsEl.querySelectorAll('button[data-action]').forEach(btn => {
+      btn.addEventListener('click', (e)=>{
+        const action = btn.getAttribute('data-action');
+        const id = Number(btn.getAttribute('data-id'));
+        if(action==='remove'){ removeFraction(id); }
+        if(action==='simplify'){ const f = fractions.find(x=>x.id===id); if(f){ const s=simplify(f.num,f.den); updateFraction(id,'num',s.num); updateFraction(id,'den',s.den); } }
+      });
+    });
+
+    computeAndRenderResult();
+  }
+
+  function updateFraction(id,field,value){ fractions = fractions.map(f => f.id===id ? {...f, [field]: Number(value)} : f); renderFractions(); }
+  function addFraction(){ fractions.push({id:nextId++, num:0, den:1}); renderFractions(); }
+  function removeFraction(id){ fractions = fractions.filter(f => f.id !== id); renderFractions(); }
+
+  function simplifyAll(){ fractions = fractions.map(f => { const s = simplify(f.num,f.den); return {...f, num:s.num, den:s.den}; }); renderFractions(); }
+
+  function toCommonDenominator(){ const dens = fractions.map(f=>Number(f.den)); if(dens.some(d=>d===0)){ alert('有分母為 0，請先更正。'); return; } if(dens.length===0) return; const common = dens.reduce((a,b)=>lcm(a,b),1); fractions = fractions.map(f=>{ const factor = common / Number(f.den); return {...f, num: Number(f.num)*factor, den: common }; }); renderFractions(); }
+
+  function expandByFactor(){ const factor = Number(expandFactorInput.value); if(!isFinite(factor) || factor===0){ alert('請輸入有效的擴分因子（非 0）。'); return; } fractions = fractions.map(f=> ({...f, num: Number(f.num)*factor, den: Number(f.den)*factor })); renderFractions(); }
+
+  function computeAndRenderResult(){
+    if(fractions.length===0){ commonDenomArea.textContent = '尚未輸入分數。'; expandedList.innerHTML=''; sumArea.innerHTML=''; return; }
+    const dens = fractions.map(f=>Number(f.den||0));
+    if(dens.some(d=>d===0)){ commonDenomArea.innerHTML = '<span style="color:#b91c1c">有分母為 0，無法通分，請修正分母。</span>'; expandedList.innerHTML=''; sumArea.innerHTML=''; return; }
+    const common = dens.reduce((a,b)=>lcm(a,b),1);
+    commonDenomArea.textContent = '最小公分母： ' + common;
+    const expanded = fractions.map(f=>{ const factor = common / Number(f.den); return {...f, expNum: Number(f.num)*factor, expDen: common }; });
+
+    expandedList.innerHTML = '';
+    const grid = document.createElement('div'); grid.className='grid';
+    expanded.forEach(e=>{
+      const d = document.createElement('div'); d.style.padding='8px'; d.style.border='1px solid #e6eefc'; d.style.borderRadius='6px';
+      const s = simplify(e.expNum, e.expDen);
+      d.innerHTML = `<div class="small">原：${e.num}/${e.den}</div><div class="small">通分後：${e.expNum}/${e.expDen}</div><div class="small">簡化後：${isNaN(s.num)||s.den===0? '—': s.num + '/' + s.den}</div>`;
+      grid.appendChild(d);
+    });
+    expandedList.appendChild(grid);
+
+    const totalNum = expanded.reduce((acc,e)=>acc + e.expNum, 0);
+    const sumSimpl = simplify(totalNum, common);
+    sumArea.innerHTML = `<div class="small">加總後分數（未約分）： ${totalNum}/${common}</div><div class="small"><strong>加總後分數（約分）： ${sumSimpl.num}/${sumSimpl.den}</strong></div>`;
+  }
+
+  // events
+  addBtn.addEventListener('click', addFraction);
+  simplifyAllBtn.addEventListener('click', simplifyAll);
+  toCommonBtn.addEventListener('click', toCommonDenominator);
+  expandBtn.addEventListener('click', expandByFactor);
+
+  // initial render
+  renderFractions();
+})();
+</script>
+</body>
+</html>
