@@ -1,11 +1,11 @@
 <!doctype html>
-<html lang="zh-tw">
+<html lang="zh-TW">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>分數通擴約分工具</title>
   <style>
-    :root{font-family: -apple-system, "SF Pro Text", Hiragino Sans, PingFang TC,  system-ui, Segoe UI !important}
+   :root{font-family: -apple-system, "SF Pro Text", Hiragino Sans, PingFang TC,  system-ui, Segoe UI !important}
     body{padding:20px; background:#f7fafc; color:#111827}
     .container{max-width:980px;margin:0 auto;background:#fff;padding:18px;border-radius:8px;box-shadow:0 6px 18px rgba(15,23,42,0.06)}
     h1{font-size:20px;margin-bottom:6px}
@@ -20,6 +20,7 @@
     .grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
     .small{font-size:13px;color:#374151}
     .note{font-size:13px;color:#6b7280;margin-top:10px}
+    .sum-highlight{font-size:36px;font-weight:bold;color:#1e3a8a;margin-top:8px}
   </style>
 </head>
 <body>
@@ -106,7 +107,7 @@
         const id = Number(e.target.getAttribute('data-id'));
         const field = e.target.getAttribute('data-field');
         const val = e.target.value;
-        fractions = fractions.map(f=> f.id===id ? {...f, [field]: (val==='"'?'': Number(val))} : f );
+        fractions = fractions.map(f=> f.id===id ? {...f, [field]: (val===""?'': Number(val))} : f );
         // rerender summary only
         computeAndRenderResult();
       });
@@ -154,7 +155,7 @@
 
     const totalNum = expanded.reduce((acc,e)=>acc + e.expNum, 0);
     const sumSimpl = simplify(totalNum, common);
-    sumArea.innerHTML = `<div class="small">加總後分數（未約分）： ${totalNum}/${common}</div><div class="small"><strong>加總後分數（約分）： ${sumSimpl.num}/${sumSimpl.den}</strong></div>`;
+    sumArea.innerHTML = `<div class="small">加總後分數（未約分）： ${totalNum}/${common}</div><div class="sum-highlight">加總後分數（約分）： ${sumSimpl.num}/${sumSimpl.den}</div>`;
   }
 
   // events
