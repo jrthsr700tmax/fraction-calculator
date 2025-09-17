@@ -1,0 +1,1213 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24,400,1,0" rel="stylesheet">
+    <title>分數計算器 - 通分、擴分、約分</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg-primary: #1a1a1a;
+            --bg-secondary: #2d2d2d;
+            --bg-tertiary: #3a3a3a;
+            --text-primary: rgba(255, 255, 255, 0.95);
+            --text-secondary: rgba(255, 255, 255, 0.8);
+            --text-tertiary: rgba(255, 255, 255, 0.6);
+            --glass-bg: rgba(255, 255, 255, 0.03);
+            --glass-border: rgba(255, 255, 255, 0.08);
+            --glass-hover: rgba(255, 255, 255, 0.08);
+            --input-bg: rgba(0, 0, 0, 0.2);
+            --input-border: rgba(255, 255, 255, 0.1);
+            --accent-blue: rgba(64, 156, 255, 0.8);
+            --accent-green: rgba(52, 199, 89, 0.8);
+            --accent-orange: rgba(255, 149, 0, 0.8);
+            --accent-purple: rgba(88, 86, 214, 0.8);
+            --accent-red: rgba(255, 69, 58, 0.8);
+            --shadow-color: rgba(0, 0, 0, 0.3);
+            --gradient-1: rgba(120, 119, 198, 0.15);
+            --gradient-2: rgba(255, 119, 198, 0.15);
+            --gradient-3: rgba(119, 198, 255, 0.15);
+        }
+
+        @media (prefers-color-scheme: light) {
+            :root {
+                --bg-primary: #f5f5f7;
+                --bg-secondary: #ffffff;
+                --bg-tertiary: #e5e5e7;
+                --text-primary: rgba(0, 0, 0, 0.9);
+                --text-secondary: rgba(0, 0, 0, 0.7);
+                --text-tertiary: rgba(0, 0, 0, 0.5);
+                --glass-bg: rgba(255, 255, 255, 0.7);
+                --glass-border: rgba(0, 0, 0, 0.08);
+                --glass-hover: rgba(255, 255, 255, 0.9);
+                --input-bg: rgba(255, 255, 255, 0.8);
+                --input-border: rgba(0, 0, 0, 0.1);
+                --accent-blue: rgba(0, 122, 255, 0.9);
+                --accent-green: rgba(40, 205, 65, 0.9);
+                --accent-orange: rgba(255, 149, 0, 0.9);
+                --accent-purple: rgba(88, 86, 214, 0.9);
+                --accent-red: rgba(255, 59, 48, 0.9);
+                --shadow-color: rgba(0, 0, 0, 0.1);
+                --gradient-1: rgba(64, 156, 255, 0.1);
+                --gradient-2: rgba(255, 45, 85, 0.1);
+                --gradient-3: rgba(52, 199, 89, 0.1);
+            }
+        }
+
+        [data-theme="light"] {
+            --bg-primary: #f5f5f7;
+            --bg-secondary: #ffffff;
+            --bg-tertiary: #e5e5e7;
+            --text-primary: rgba(0, 0, 0, 0.9);
+            --text-secondary: rgba(0, 0, 0, 0.7);
+            --text-tertiary: rgba(0, 0, 0, 0.5);
+            --glass-bg: rgba(255, 255, 255, 0.7);
+            --glass-border: rgba(0, 0, 0, 0.08);
+            --glass-hover: rgba(255, 255, 255, 0.9);
+            --input-bg: rgba(255, 255, 255, 0.8);
+            --input-border: rgba(0, 0, 0, 0.1);
+            --accent-blue: rgba(0, 122, 255, 0.9);
+            --accent-green: rgba(40, 205, 65, 0.9);
+            --accent-orange: rgba(255, 149, 0, 0.9);
+            --accent-purple: rgba(88, 86, 214, 0.9);
+            --accent-red: rgba(255, 59, 48, 0.9);
+            --shadow-color: rgba(0, 0, 0, 0.1);
+            --gradient-1: rgba(64, 156, 255, 0.1);
+            --gradient-2: rgba(255, 45, 85, 0.1);
+            --gradient-3: rgba(52, 199, 89, 0.1);
+        }
+
+        [data-theme="dark"] {
+            --bg-primary: #1a1a1a;
+            --bg-secondary: #2d2d2d;
+            --bg-tertiary: #3a3a3a;
+            --text-primary: rgba(255, 255, 255, 0.95);
+            --text-secondary: rgba(255, 255, 255, 0.8);
+            --text-tertiary: rgba(255, 255, 255, 0.6);
+            --glass-bg: rgba(255, 255, 255, 0.03);
+            --glass-border: rgba(255, 255, 255, 0.08);
+            --glass-hover: rgba(255, 255, 255, 0.08);
+            --input-bg: rgba(0, 0, 0, 0.2);
+            --input-border: rgba(255, 255, 255, 0.1);
+            --accent-blue: rgba(64, 156, 255, 0.8);
+            --accent-green: rgba(52, 199, 89, 0.8);
+            --accent-orange: rgba(255, 149, 0, 0.8);
+            --accent-purple: rgba(88, 86, 214, 0.8);
+            --accent-red: rgba(255, 69, 58, 0.8);
+            --shadow-color: rgba(0, 0, 0, 0.3);
+            --gradient-1: rgba(120, 119, 198, 0.15);
+            --gradient-2: rgba(255, 119, 198, 0.15);
+            --gradient-3: rgba(119, 198, 255, 0.15);
+        }
+
+        body {
+            font-family: -apple-system, SF Pro, Hiragino Sans, PingFang TC, Segoe UI, system-ui !important;
+            background: linear-gradient(135deg, var(--bg-primary) 0%, var(--bg-secondary) 25%, var(--bg-primary) 50%, var(--bg-tertiary) 75%, var(--bg-primary) 100%);
+            background-size: 400% 400%;
+            animation: gradientShift 15s ease infinite;
+            min-height: 100vh;
+            padding: 20px;
+            position: relative;
+            overflow-x: hidden;
+            transition: all 0.4s ease;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 20% 50%, var(--gradient-1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, var(--gradient-2) 0%, transparent 50%),
+                radial-gradient(circle at 40% 80%, var(--gradient-3) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .theme-toggle {
+            position: fixed;
+            top: 24px;
+            right: 24px;
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px) saturate(150%);
+            border: 1px solid var(--glass-border);
+            border-radius: 50%;
+            width: 52px;
+            height: 52px;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            color: var(--text-primary);
+        }
+
+        .theme-toggle:hover {
+            background: var(--glass-hover);
+            transform: scale(1.1) rotate(180deg);
+            box-shadow: 
+                0 8px 32px var(--shadow-color),
+                0 0 0 1px var(--glass-border);
+        }
+
+        .theme-toggle .material-symbols-rounded {
+            font-size: 24px;
+            transition: transform 0.4s ease;
+        }
+
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .material-symbols-rounded {
+            font-family: 'Material Symbols Rounded';
+            font-weight: normal;
+            font-style: normal;
+            font-size: 24px;
+            line-height: 1;
+            letter-spacing: normal;
+            text-transform: none;
+            display: inline-block;
+            white-space: nowrap;
+            word-wrap: normal;
+            direction: ltr;
+            -webkit-font-feature-settings: 'liga';
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .icon-text {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 1;
+        }
+
+        h1 {
+            text-align: center;
+            color: var(--text-primary);
+            margin-bottom: 40px;
+            font-size: 3em;
+            font-weight: 700;
+            background: linear-gradient(45deg, var(--text-primary) 0%, var(--text-secondary) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-shadow: 0 0 30px var(--text-tertiary);
+            letter-spacing: -0.02em;
+            transition: all 0.4s ease;
+        }
+
+        .liquid-glass {
+            background: var(--glass-bg);
+            backdrop-filter: blur(40px) saturate(150%);
+            -webkit-backdrop-filter: blur(40px) saturate(150%);
+            border: 1px solid var(--glass-border);
+            border-radius: 24px;
+            box-shadow: 
+                0 8px 32px var(--shadow-color),
+                inset 0 1px 0 var(--glass-border),
+                inset 0 -1px 0 var(--glass-border);
+            position: relative;
+            overflow: hidden;
+            transition: all 0.4s ease;
+        }
+
+        .liquid-glass::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--glass-border), transparent);
+        }
+
+        .fraction-input-section {
+            padding: 32px;
+            margin-bottom: 32px;
+        }
+
+        .section-title {
+            font-size: 1.4em;
+            color: var(--text-secondary);
+            margin-bottom: 24px;
+            font-weight: 600;
+            letter-spacing: -0.01em;
+            transition: color 0.4s ease;
+        }
+
+        .fraction-inputs {
+            display: grid;
+            gap: 20px;
+            margin-bottom: 24px;
+        }
+
+        .fraction-input {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            padding: 20px;
+            border-radius: 16px;
+            border: 1px solid var(--glass-border);
+            transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            position: relative;
+        }
+
+        .fraction-input::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            border-radius: 16px;
+            padding: 1px;
+            background: linear-gradient(135deg, var(--glass-border), rgba(0, 0, 0, 0.02));
+            mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            mask-composite: exclude;
+            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            -webkit-mask-composite: exclude;
+            pointer-events: none;
+        }
+
+        .fraction-input:hover {
+            background: var(--glass-hover);
+            border-color: var(--glass-border);
+            transform: translateY(-2px) scale(1.01);
+            box-shadow: 
+                0 12px 40px var(--shadow-color),
+                0 0 0 1px var(--glass-border);
+        }
+
+        .fraction-input span {
+            color: var(--text-secondary);
+            font-weight: 500;
+            min-width: 80px;
+        }
+
+        .fraction-input input {
+            width: 80px;
+            padding: 12px 16px;
+            background: var(--input-bg);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--input-border);
+            border-radius: 12px;
+            text-align: center;
+            font-size: 16px;
+            color: var(--text-primary);
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+
+        .fraction-input input::placeholder {
+            color: var(--text-tertiary);
+        }
+
+        .fraction-input input:focus {
+            outline: none;
+            border-color: var(--accent-blue);
+            background: var(--accent-blue);
+            box-shadow: 
+                0 0 0 3px rgba(64, 156, 255, 0.2),
+                0 4px 20px rgba(64, 156, 255, 0.1);
+        }
+
+        .fraction-display {
+            font-size: 1.3em;
+            font-weight: 600;
+            color: var(--text-primary);
+            min-width: 80px;
+            transition: color 0.4s ease;
+        }
+
+        .fraction-line {
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 8px;
+            font-size: 24px;
+            font-weight: 300;
+            color: var(--text-secondary);
+            transform: rotate(15deg);
+        }
+
+        .fraction-line::before {
+            content: '/';
+        }
+
+        .remove-btn {
+            background: linear-gradient(135deg, var(--accent-red), rgba(255, 69, 58, 0.6));
+            backdrop-filter: blur(20px);
+            color: white;
+            border: 1px solid rgba(255, 69, 58, 0.3);
+            border-radius: 50%;
+            width: 36px;
+            height: 36px;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        .remove-btn .material-symbols-rounded {
+            font-size: 18px;
+        }
+
+        .remove-btn:hover {
+            background: linear-gradient(135deg, rgba(255, 69, 58, 1), rgba(255, 69, 58, 0.8));
+            transform: scale(1.1);
+            box-shadow: 
+                0 8px 25px rgba(255, 69, 58, 0.4),
+                0 0 0 1px rgba(255, 69, 58, 0.2);
+        }
+
+        .add-fraction-btn {
+            background: linear-gradient(135deg, var(--accent-blue), rgba(64, 156, 255, 0.6));
+            backdrop-filter: blur(20px);
+            color: white;
+            border: 1px solid rgba(64, 156, 255, 0.3);
+            border-radius: 16px;
+            padding: 16px 24px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            position: relative;
+        }
+
+        .add-fraction-btn:hover {
+            background: linear-gradient(135deg, rgba(64, 156, 255, 1), rgba(64, 156, 255, 0.8));
+            transform: translateY(-2px) scale(1.02);
+            box-shadow: 
+                0 12px 30px rgba(64, 156, 255, 0.4),
+                0 0 0 1px rgba(64, 156, 255, 0.2);
+        }
+
+        .sum-display-section {
+            background: linear-gradient(135deg, var(--glass-bg), rgba(255, 255, 255, 0.03));
+            backdrop-filter: blur(40px) saturate(180%);
+            border-radius: 24px;
+            padding: 32px;
+            margin: 32px 0;
+            border: 1px solid var(--glass-border);
+            position: relative;
+            overflow: hidden;
+            transition: all 0.4s ease;
+        }
+
+        .sum-display-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, var(--glass-border), transparent);
+            animation: shimmer 4s infinite;
+        }
+
+        @keyframes shimmer {
+            0% { left: -100%; }
+            100% { left: 100%; }
+        }
+
+        .sum-title {
+            font-size: 1.6em;
+            font-weight: 700;
+            color: var(--text-primary);
+            text-align: center;
+            margin-bottom: 24px;
+            letter-spacing: -0.01em;
+            position: relative;
+            z-index: 1;
+            transition: color 0.4s ease;
+        }
+
+        .sum-result {
+            text-align: center;
+            position: relative;
+            z-index: 1;
+        }
+
+        .sum-calculation {
+            font-size: 1.3em;
+            color: var(--text-secondary);
+            margin-bottom: 20px;
+            font-weight: 500;
+            transition: color 0.4s ease;
+        }
+
+        .sum-value {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .sum-fraction {
+            font-size: 3em !important;
+            font-weight: 700;
+            color: var(--text-primary);
+            text-shadow: 0 0 20px var(--text-tertiary);
+            transition: color 0.4s ease;
+        }
+
+        .sum-fraction .numerator {
+            padding: 8px 20px;
+            border-bottom: 4px solid var(--text-primary);
+        }
+
+        .sum-fraction .denominator {
+            padding: 8px 20px;
+        }
+
+        .operation-buttons {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin: 32px 0;
+        }
+
+        .op-btn {
+            background: linear-gradient(135deg, var(--accent-green), rgba(52, 199, 89, 0.6));
+            backdrop-filter: blur(20px);
+            color: white;
+            border: 1px solid rgba(52, 199, 89, 0.3);
+            border-radius: 18px;
+            padding: 18px 28px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            min-width: 140px;
+            position: relative;
+        }
+
+        .op-btn:hover {
+            background: linear-gradient(135deg, rgba(52, 199, 89, 1), rgba(52, 199, 89, 0.8));
+            transform: translateY(-3px) scale(1.02);
+            box-shadow: 
+                0 15px 35px rgba(52, 199, 89, 0.4),
+                0 0 0 1px rgba(52, 199, 89, 0.2);
+        }
+
+        .op-btn.simplify {
+            background: linear-gradient(135deg, var(--accent-orange), rgba(255, 149, 0, 0.6));
+            border-color: rgba(255, 149, 0, 0.3);
+        }
+
+        .op-btn.simplify:hover {
+            background: linear-gradient(135deg, rgba(255, 149, 0, 1), rgba(255, 149, 0, 0.8));
+            box-shadow: 
+                0 15px 35px rgba(255, 149, 0, 0.4),
+                0 0 0 1px rgba(255, 149, 0, 0.2);
+        }
+
+        .op-btn.expand {
+            background: linear-gradient(135deg, var(--accent-purple), rgba(88, 86, 214, 0.6));
+            border-color: rgba(88, 86, 214, 0.3);
+        }
+
+        .op-btn.expand:hover {
+            background: linear-gradient(135deg, rgba(88, 86, 214, 1), rgba(88, 86, 214, 0.8));
+            box-shadow: 
+                0 15px 35px rgba(88, 86, 214, 0.4),
+                0 0 0 1px rgba(88, 86, 214, 0.2);
+        }
+
+        .results {
+            padding: 32px;
+            margin-top: 32px;
+        }
+
+        .result-item {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border-radius: 20px;
+            padding: 28px;
+            margin-bottom: 20px;
+            border: 1px solid var(--glass-border);
+            position: relative;
+            transition: all 0.4s ease;
+        }
+
+        .result-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+            background: linear-gradient(180deg, var(--accent-blue), rgba(64, 156, 255, 0.4));
+            border-radius: 2px 0 0 2px;
+        }
+
+        .result-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .result-title {
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 16px;
+            font-size: 1.2em;
+            letter-spacing: -0.01em;
+            transition: color 0.4s ease;
+        }
+
+        .result-content {
+            font-size: 1.2em;
+            color: var(--text-secondary);
+            line-height: 1.6;
+            transition: color 0.4s ease;
+        }
+
+        .fraction {
+            display: inline-flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 0 12px;
+            font-weight: 600;
+            color: var(--text-primary);
+            transition: color 0.4s ease;
+        }
+
+        .numerator {
+            border-bottom: 2px solid var(--text-secondary);
+            padding: 2px 10px;
+        }
+
+        .denominator {
+            padding: 2px 10px;
+        }
+
+        .error {
+            background: linear-gradient(135deg, rgba(255, 69, 58, 0.2), rgba(255, 69, 58, 0.1));
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 69, 58, 0.3);
+            color: rgba(255, 200, 200, 0.95);
+            padding: 20px;
+            border-radius: 16px;
+            margin: 16px 0;
+            font-weight: 600;
+        }
+
+        [data-theme="light"] .error {
+            color: rgba(200, 50, 50, 0.95);
+        }
+
+        .step-by-step {
+            background: var(--glass-bg);
+            backdrop-filter: blur(15px);
+            border-radius: 16px;
+            padding: 20px;
+            margin-top: 20px;
+            border: 1px solid var(--glass-border);
+            position: relative;
+            transition: all 0.4s ease;
+        }
+
+        .step-by-step::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+            background: linear-gradient(180deg, var(--accent-blue), rgba(64, 156, 255, 0.3));
+            border-radius: 2px 0 0 2px;
+        }
+
+        .decimal-value {
+            font-size: 1.4em;
+            color: var(--text-tertiary);
+            font-weight: 500;
+            font-style: italic;
+            transition: color 0.4s ease;
+        }title {
+            font-size: 1.6em;
+            font-weight: 700;
+            color: rgba(255, 255, 255, 0.95);
+            text-align: center;
+            margin-bottom: 24px;
+            letter-spacing: -0.01em;
+            position: relative;
+            z-index: 1;
+        }
+
+        .sum-result {
+            text-align: center;
+            position: relative;
+            z-index: 1;
+        }
+
+        .sum-calculation {
+            font-size: 1.3em;
+            color: rgba(255, 255, 255, 0.7);
+            margin-bottom: 20px;
+            font-weight: 500;
+        }
+
+        .sum-value {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .sum-fraction {
+            font-size: 3em !important;
+            font-weight: 700;
+            color: rgba(255, 255, 255, 0.95);
+            text-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
+        }
+
+        .sum-fraction .numerator {
+            padding: 8px 20px;
+            border-bottom: 4px solid rgba(255, 255, 255, 0.8);
+        }
+
+        .sum-fraction .denominator {
+            padding: 8px 20px;
+        }
+
+        .decimal-value {
+            font-size: 1.4em;
+            color: rgba(255, 255, 255, 0.6);
+            font-weight: 500;
+            font-style: italic;
+        }
+
+        .operation-buttons {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin: 32px 0;
+        }
+
+        .op-btn {
+            background: linear-gradient(135deg, rgba(52, 199, 89, 0.8), rgba(52, 199, 89, 0.6));
+            backdrop-filter: blur(20px);
+            color: white;
+            border: 1px solid rgba(52, 199, 89, 0.3);
+            border-radius: 18px;
+            padding: 18px 28px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            min-width: 140px;
+            position: relative;
+        }
+
+        .op-btn:hover {
+            background: linear-gradient(135deg, rgba(52, 199, 89, 1), rgba(52, 199, 89, 0.8));
+            transform: translateY(-3px) scale(1.02);
+            box-shadow: 
+                0 15px 35px rgba(52, 199, 89, 0.4),
+                0 0 0 1px rgba(52, 199, 89, 0.2);
+        }
+
+        .op-btn.simplify {
+            background: linear-gradient(135deg, rgba(255, 149, 0, 0.8), rgba(255, 149, 0, 0.6));
+            border-color: rgba(255, 149, 0, 0.3);
+        }
+
+        .op-btn.simplify:hover {
+            background: linear-gradient(135deg, rgba(255, 149, 0, 1), rgba(255, 149, 0, 0.8));
+            box-shadow: 
+                0 15px 35px rgba(255, 149, 0, 0.4),
+                0 0 0 1px rgba(255, 149, 0, 0.2);
+        }
+
+        .op-btn.expand {
+            background: linear-gradient(135deg, rgba(88, 86, 214, 0.8), rgba(88, 86, 214, 0.6));
+            border-color: rgba(88, 86, 214, 0.3);
+        }
+
+        .op-btn.expand:hover {
+            background: linear-gradient(135deg, rgba(88, 86, 214, 1), rgba(88, 86, 214, 0.8));
+            box-shadow: 
+                0 15px 35px rgba(88, 86, 214, 0.4),
+                0 0 0 1px rgba(88, 86, 214, 0.2);
+        }
+
+        .results {
+            padding: 32px;
+            margin-top: 32px;
+        }
+
+        .result-item {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(20px);
+            border-radius: 20px;
+            padding: 28px;
+            margin-bottom: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            position: relative;
+        }
+
+        .result-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+            background: linear-gradient(180deg, rgba(64, 156, 255, 0.8), rgba(64, 156, 255, 0.4));
+            border-radius: 2px 0 0 2px;
+        }
+
+        .result-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .result-title {
+            font-weight: 700;
+            color: rgba(255, 255, 255, 0.9);
+            margin-bottom: 16px;
+            font-size: 1.2em;
+            letter-spacing: -0.01em;
+        }
+
+        .result-content {
+            font-size: 1.2em;
+            color: rgba(255, 255, 255, 0.8);
+            line-height: 1.6;
+        }
+
+        .fraction {
+            display: inline-flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 0 12px;
+            font-weight: 600;
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        .numerator {
+            border-bottom: 2px solid rgba(255, 255, 255, 0.7);
+            padding: 2px 10px;
+        }
+
+        .denominator {
+            padding: 2px 10px;
+        }
+
+        .error {
+            background: linear-gradient(135deg, rgba(255, 69, 58, 0.2), rgba(255, 69, 58, 0.1));
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 69, 58, 0.3);
+            color: rgba(255, 200, 200, 0.95);
+            padding: 20px;
+            border-radius: 16px;
+            margin: 16px 0;
+            font-weight: 600;
+        }
+
+        .step-by-step {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(15px);
+            border-radius: 16px;
+            padding: 20px;
+            margin-top: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            position: relative;
+        }
+
+        .step-by-step::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+            background: linear-gradient(180deg, rgba(64, 156, 255, 0.6), rgba(64, 156, 255, 0.3));
+            border-radius: 2px 0 0 2px;
+        }
+
+        .step {
+            margin: 12px 0;
+            color: rgba(255, 255, 255, 0.7);
+            line-height: 1.6;
+            font-weight: 500;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                margin: 10px;
+                padding: 0;
+            }
+            
+            h1 {
+                font-size: 2.2em;
+            }
+            
+            .liquid-glass {
+                border-radius: 20px;
+            }
+            
+            .fraction-input-section,
+            .sum-display-section,
+            .results {
+                padding: 24px;
+            }
+            
+            .fraction-input {
+                flex-wrap: wrap;
+                gap: 12px;
+            }
+            
+            .operation-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .op-btn {
+                width: 100%;
+                max-width: 280px;
+            }
+            
+            .sum-fraction {
+                font-size: 2.2em !important;
+            }
+            
+            .sum-value {
+                flex-direction: column;
+                gap: 16px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <button class="theme-toggle" id="themeToggle">
+            <span class="material-symbols-rounded" id="themeIcon">dark_mode</span>
+        </button>
+        
+        <h1>分數計算器</h1>
+        
+        <div class="fraction-input-section liquid-glass">
+            <div class="section-title">
+                <span class="icon-text">
+                    <span class="material-symbols-rounded">edit</span>
+                    輸入分數
+                </span>
+            </div>
+            <div class="fraction-inputs" id="fractionInputs">
+                <div class="fraction-input">
+                    <span>分數 1:</span>
+                    <input type="number" class="numerator" placeholder="分子" value="1">
+                    <div class="fraction-line"></div>
+                    <input type="number" class="denominator" placeholder="分母" value="2">
+                    <div class="fraction-display" id="display0">
+                        <span class="fraction">
+                            <span class="numerator">1</span>
+                            <span class="denominator">2</span>
+                        </span>
+                    </div>
+                </div>
+                <div class="fraction-input">
+                    <span>分數 2:</span>
+                    <input type="number" class="numerator" placeholder="分子" value="1">
+                    <div class="fraction-line"></div>
+                    <input type="number" class="denominator" placeholder="分母" value="3">
+                    <div class="fraction-display" id="display1">
+                        <span class="fraction">
+                            <span class="numerator">1</span>
+                            <span class="denominator">3</span>
+                        </span>
+                    </div>
+                </div>
+            </div>
+            <button class="add-fraction-btn" onclick="addFraction()">
+                <span class="icon-text">
+                    <span class="material-symbols-rounded">add</span>
+                    新增分數
+                </span>
+            </button>
+        </div>
+
+        <div class="sum-display-section liquid-glass">
+            <div class="sum-title">
+                <span class="icon-text">
+                    <span class="material-symbols-rounded">calculate</span>
+                    所有分數加總
+                </span>
+            </div>
+            <div class="sum-result" id="sumResult">
+                <div class="sum-calculation" id="sumCalculation">1/2 + 1/3 = </div>
+                <div class="sum-value">
+                    <span class="fraction sum-fraction">
+                        <span class="numerator">5</span>
+                        <span class="denominator">6</span>
+                    </span>
+                    <span class="decimal-value">(≈ 0.833)</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="operation-buttons">
+            <button class="op-btn" onclick="commonDenominator()">
+                <span class="icon-text">
+                    <span class="material-symbols-rounded">merge</span>
+                    通分
+                </span>
+            </button>
+            <button class="op-btn simplify" onclick="simplifyFractions()">
+                <span class="icon-text">
+                    <span class="material-symbols-rounded">compress</span>
+                    約分
+                </span>
+            </button>
+            <button class="op-btn expand" onclick="expandFractions()">
+                <span class="icon-text">
+                    <span class="material-symbols-rounded">expand</span>
+                    擴分
+                </span>
+            </button>
+        </div>
+
+        <div class="results liquid-glass" id="results" style="display: none;">
+            <div class="section-title">
+                <span class="icon-text">
+                    <span class="material-symbols-rounded">analytics</span>
+                    計算結果
+                </span>
+            </div>
+            <div id="resultContent"></div>
+        </div>
+    </div>
+
+    <script>
+        let fractionCount = 2;
+
+        // 主題切換功能
+        function initTheme() {
+            // 檢查系統偏好設定
+            const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+            
+            // 檢查本地儲存的設定
+            const savedTheme = localStorage.getItem('theme');
+            
+            let currentTheme;
+            if (savedTheme) {
+                currentTheme = savedTheme;
+            } else {
+                // 根據系統偏好設定或地理位置決定預設主題
+                const now = new Date();
+                const hour = now.getHours();
+                
+                // 如果是夜晚時間 (18:00-06:00) 或系統偏好暗色模式，使用暗色主題
+                if ((hour >= 18 || hour < 6) || prefersDark) {
+                    currentTheme = 'dark';
+                } else {
+                    currentTheme = 'light';
+                }
+            }
+            
+            applyTheme(currentTheme);
+        }
+
+        function applyTheme(theme) {
+            document.documentElement.setAttribute('data-theme', theme);
+            const themeIcon = document.getElementById('themeIcon');
+            
+            if (theme === 'dark') {
+                themeIcon.textContent = 'light_mode';
+            } else {
+                themeIcon.textContent = 'dark_mode';
+            }
+            
+            // 儲存到 localStorage
+            localStorage.setItem('theme', theme);
+        }
+
+        function toggleTheme() {
+            const currentTheme = document.documentElement.getAttribute('data-theme');
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            applyTheme(newTheme);
+        }
+
+        // 監聽系統主題變化
+        window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
+            // 只有在沒有手動設定主題時才跟隨系統變化
+            if (!localStorage.getItem('theme')) {
+                const newTheme = e.matches ? 'dark' : 'light';
+                applyTheme(newTheme);
+            }
+        });
+
+        // 計算分數加法
+        function addFractions(fractions) {
+            if (fractions.length === 0) return { numerator: 0, denominator: 1 };
+            if (fractions.length === 1) return fractions[0];
+            
+            // 找出所有分母的最小公倍數
+            const denominators = fractions.map(f => f.denominator);
+            const commonDen = lcmMultiple(denominators);
+            
+            // 將所有分數通分後相加
+            let totalNumerator = 0;
+            fractions.forEach(fraction => {
+                const multiplier = commonDen / fraction.denominator;
+                totalNumerator += fraction.numerator * multiplier;
+            });
+            
+            // 約分結果
+            const result = simplifyFraction(totalNumerator, commonDen);
+            return {
+                numerator: result.numerator,
+                denominator: result.denominator
+            };
+        }
+
+        // 更新加總顯示
+        function updateSum() {
+            try {
+                const fractions = getAllFractions();
+                const sum = addFractions(fractions);
+                const decimalValue = (sum.numerator / sum.denominator).toFixed(3);
+                
+                // 建立計算式顯示
+                let calculationText = fractions.map(f => `${f.numerator}/${f.denominator}`).join(' + ') + ' = ';
+                
+                // 更新顯示
+                document.getElementById('sumCalculation').textContent = calculationText;
+                document.querySelector('.sum-fraction .numerator').textContent = sum.numerator;
+                document.querySelector('.sum-fraction .denominator').textContent = sum.denominator;
+                document.querySelector('.decimal-value').textContent = `(≈ ${decimalValue})`;
+                
+            } catch (error) {
+                // 如果有錯誤，顯示錯誤訊息
+                document.getElementById('sumCalculation').textContent = '請輸入有效的分數';
+                document.querySelector('.sum-fraction .numerator').textContent = '?';
+                document.querySelector('.sum-fraction .denominator').textContent = '?';
+                document.querySelector('.decimal-value').textContent = '';
+            }
+        }
+
+        // 更新分數顯示
+        function updateFractionDisplay(index) {
+            const inputs = document.querySelectorAll('.fraction-input')[index];
+            const numerator = inputs.querySelector('.numerator').value || '?';
+            const denominator = inputs.querySelector('.denominator').value || '?';
+            const display = inputs.querySelector('.fraction-display');
+            
+            display.innerHTML = `
+                <span class="fraction">
+                    <span class="numerator">${numerator}</span>
+                    <span class="denominator">${denominator}</span>
+                </span>
+            `;
+            
+            // 更新加總
+            updateSum();
+        }
+
+        // 新增分數輸入
+        function addFraction() {
+            const container = document.getElementById('fractionInputs');
+            const newFraction = document.createElement('div');
+            newFraction.className = 'fraction-input';
+            newFraction.innerHTML = `
+                <span>分數 ${fractionCount + 1}:</span>
+                <input type="number" class="numerator" placeholder="分子" value="1">
+                <div class="fraction-line"></div>
+                <input type="number" class="denominator" placeholder="分母" value="4">
+                <div class="fraction-display">
+                    <span class="fraction">
+                        <span class="numerator">1</span>
+                        <span class="denominator">4</span>
+                    </span>
+                </div>
+                <button class="remove-btn" onclick="removeFraction(this)">
+                    <span class="material-symbols-rounded">close</span>
+                </button>
+            `;
+            
+            container.appendChild(newFraction);
+            fractionCount++;
+            
+            // 添加事件監聽器
+            const inputs = newFraction.querySelectorAll('input');
+            inputs.forEach((input, i) => {
+                input.addEventListener('input', () => {
+                    updateFractionDisplay(Array.from(container.children).indexOf(newFraction));
+                });
+            });
+            
+            updateFractionDisplay(fractionCount - 1);
+            updateSum(); // 更新加總
+        }
+
+        // 移除分數
+        function removeFraction(btn) {
+            if (document.querySelectorAll('.fraction-input').length > 2) {
+                btn.parentElement.remove();
+                updateFractionLabels();
+                updateSum(); // 更新加總
+            }
+        }
+
+        // 更新分數標籤
+        function updateFractionLabels() {
+            const fractions = document.querySelectorAll('.fraction-input');
+            fractions.forEach((fraction, index) => {
+                fraction.querySelector('span').textContent = `分數 ${index + 1}:`;
+            });
+            fractionCount = fractions.length;
+        }
+
+        // 獲取所有分數
+        function getAllFractions() {
+            const fractions = [];
+            const inputs = document.querySelectorAll('.fraction-input');
+            
+            for (let input of inputs) {
+                const num = parseInt(input.querySelector('.numerator').value);
+                const den = parseInt(input.querySelector('.denominator').value);
+                
+                if (isNaN(num) || isNaN(den) || den === 0) {
+                    throw new Error('請輸入有效的分數（分母不能為0）');
+                }
+                
+                fractions.push({ numerator: num, denominator: den });
+            }
+            
+            return fractions;
+        }
+
+        // 計算最大公因數
+        function gcd(a, b) {
+            a = Math.abs(a);
+            b = Math.abs(b);
+            while (b !== 
