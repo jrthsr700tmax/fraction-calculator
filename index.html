@@ -63,6 +63,8 @@
             --add-button-hover: rgba(52, 199, 89, 0.4);
             --calc-button-bg: rgba(0, 122, 255, 0.2);
             --calc-button-hover: rgba(0, 122, 255, 0.4);
+            --clear-button-bg: rgba(255, 149, 0, 0.2);
+            --clear-button-hover: rgba(255, 149, 0, 0.4);
             --delete-button-bg: rgba(255, 59, 48, 0.2);
             --delete-button-hover: rgba(255, 59, 48, 0.4);
             --icon-fill-dark: #333;
@@ -89,6 +91,8 @@
             --add-button-hover: rgba(52, 199, 89, 0.5);
             --calc-button-bg: rgba(0, 122, 255, 0.3);
             --calc-button-hover: rgba(0, 122, 255, 0.5);
+            --clear-button-bg: rgba(255, 149, 0, 0.3);
+            --clear-button-hover: rgba(255, 149, 0, 0.5);
             --delete-button-bg: rgba(255, 59, 48, 0.3);
             --delete-button-hover: rgba(255, 59, 48, 0.5);
             --icon-fill-dark: #333;
@@ -112,7 +116,8 @@
         .header {
             position: relative;
             width: 100%;
-            max-width: 600px;
+            max-width: 66.67%;
+            margin: 0 auto;
             margin-bottom: 1rem;
             text-align: center;
         }
@@ -123,7 +128,8 @@
             padding: 1.5rem;
             box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
             width: 100%;
-            max-width: 600px;
+            max-width: 66.67%;
+            margin: 0 auto;
             border: 1px solid var(--container-border);
         }
         .fraction-input {
@@ -142,15 +148,27 @@
         }
         .fraction-input label {
             color: var(--text-primary);
+            display: flex;
+            align-items: center;
+        }
+        .label-divider {
+            display: inline-block;
+            width: 0;
+            border-left: 1px solid var(--text-primary);
+            height: 1.2rem;
+            margin: 0 0.5rem;
+            vertical-align: middle;
         }
         input[type="number"] {
+            flex: 1;
+            min-width: 120px;
+            max-width: 255px;
             background: var(--input-bg);
             border: none;
             border-radius: 8px;
             padding: 0.5rem;
             color: var(--text-primary);
             font-size: 1rem;
-            width: 80px;
             text-align: center;
             transition: all 0.3s ease;
         }
@@ -159,6 +177,8 @@
             box-shadow: 0 0 0 2px rgba(0, 122, 255, 0.5);
         }
         .slash {
+            width: 1rem;
+            text-align: center;
             color: var(--text-primary);
             font-size: 1rem;
         }
@@ -173,6 +193,20 @@
             left: 0.75rem;
             width: 100%;
         }
+        .button-container {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            margin-top: 1rem;
+            gap: 0.5rem;
+        }
+        .flex-grow {
+            flex-grow: 1;
+        }
+        .adjacent-buttons {
+            display: flex;
+            gap: 0.25rem;
+        }
         .icon-button {
             border-radius: 12px;
             padding: 0.5rem;
@@ -185,8 +219,7 @@
             border: none;
             color: var(--text-primary);
             font-weight: 500;
-            width: 100%;
-            max-width: 150px;
+            width: 120px;
         }
         .icon-button svg {
             width: 20px;
@@ -207,6 +240,13 @@
             background: var(--calc-button-hover);
             transform: scale(1.05);
         }
+        #clear-all {
+            background: var(--clear-button-bg);
+        }
+        #clear-all:hover {
+            background: var(--clear-button-hover);
+            transform: scale(1.05);
+        }
         .delete-button {
             background: var(--delete-button-bg);
             border-radius: 8px;
@@ -216,6 +256,7 @@
             justify-content: center;
             cursor: pointer;
             transition: all 0.3s ease;
+            margin-left: auto;
         }
         .delete-button:hover {
             background: var(--delete-button-hover);
@@ -393,12 +434,6 @@
                 padding: 1rem;
                 max-width: 100%;
             }
-            h1 {
-                font-size: 1.5rem;
-            }
-            p {
-                font-size: 0.9rem;
-            }
             .fraction-input {
                 display: flex;
                 flex-direction: row;
@@ -406,20 +441,32 @@
                 gap: 0.5rem;
                 padding: 0.5rem;
             }
-            input[type="number"] {
-                width: 70px;
-                max-width: 70px;
+            h1 {
+                font-size: 1.5rem;
+            }
+            p {
                 font-size: 0.9rem;
             }
             .fraction-input label {
                 font-size: 0.9rem;
                 order: 1;
             }
+            .label-divider {
+                height: 1rem;
+                margin: 0 0.4rem;
+            }
+            input[type="number"] {
+                flex: 1;
+                min-width: 70px;
+                max-width: 100px;
+                font-size: 0.9rem;
+            }
             .fraction-input .numerator {
                 order: 2;
             }
             .fraction-input .slash {
                 order: 3;
+                width: 0.9rem;
                 font-size: 0.9rem;
             }
             .fraction-input .denominator {
@@ -444,10 +491,22 @@
                 left: 0.5rem;
                 width: 100%;
             }
+            .button-container {
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+            .adjacent-buttons {
+                flex-direction: column;
+                gap: 0.5rem;
+                width: 100%;
+            }
+            .flex-grow {
+                display: none;
+            }
             .icon-button {
+                width: 100%;
                 padding: 0.5rem;
                 font-size: 0.9rem;
-                max-width: 100%;
             }
             .icon-button svg {
                 width: 18px;
@@ -502,7 +561,7 @@
         @media (min-width: 641px) and (max-width: 1024px) {
             .container {
                 padding: 1.5rem;
-                max-width: 90%;
+                max-width: 66.67%;
             }
             h1 {
                 font-size: 1.6rem;
@@ -511,7 +570,12 @@
                 font-size: 1rem;
             }
             input[type="number"] {
-                width: 100px;
+                flex: 1;
+                min-width: 120px;
+                max-width: 200px;
+            }
+            .slash {
+                width: 1rem;
             }
             .fraction-input {
                 gap: 0.75rem;
@@ -564,7 +628,7 @@
     <div class="container">
         <div id="fractions-container">
             <div class="fraction-input">
-                <label>分數 1:</label>
+                <label>分數 1<span class="label-divider"></span></label>
                 <input type="number" class="numerator" placeholder="分子" required>
                 <span class="slash">/</span>
                 <input type="number" class="denominator" placeholder="分母" required min="1">
@@ -576,7 +640,7 @@
                 <div class="error-message"></div>
             </div>
             <div class="fraction-input">
-                <label>分數 2:</label>
+                <label>分數 2<span class="label-divider"></span></label>
                 <input type="number" class="numerator" placeholder="分子" required>
                 <span class="slash">/</span>
                 <input type="number" class="denominator" placeholder="分母" required min="1">
@@ -589,19 +653,28 @@
             </div>
         </div>
         
-        <div class="flex flex-col sm:flex-row justify-between mt-4 gap-2">
+        <div class="button-container">
             <button id="add-fraction" class="icon-button">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
                     <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm5 11h-4v4h-2v-4H7v-2h4V7h2v4h4v2z"/>
                 </svg>
                 新增分數
             </button>
-            <button id="calculate" class="icon-button">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-                    <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14h-2v-2h2v2zm0-4h-2v-2h2v2zm-4 4H8v-2h2v2zm0-4H8v-2h2v2zm8 0h-2v-2h2v2zm0-4h-2V7h2v2z"/>
-                </svg>
-                計算
-            </button>
+            <div class="flex-grow"></div>
+            <div class="adjacent-buttons">
+                <button id="calculate" class="icon-button">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                        <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14h-2v-2h2v2zm0-4h-2v-2h2v2zm-4 4H8v-2h2v2zm0-4H8v-2h2v2zm8 0h-2v-2h2v2zm0-4h-2V7h2v2z"/>
+                    </svg>
+                    計算
+                </button>
+                <button id="clear-all" class="icon-button">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                        <path d="M18.3 5.71a.996.996 0 00-1.41 0L12 10.59 7.11 5.7a.996.996 0 00-1.41 0c-.39.39-.39 1.02 0 1.41L10.59 12 5.7 16.89a.996.996 0 000 1.41c.39.39 1.02.39 1.41 0L12 13.41l4.89 4.89c.39.39 1.02.39 1.41 0 .39-.39.39-1.02 0-1.41L13.41 12l4.89-4.89c.38-.38.38-1.02 0-1.4z"/>
+                    </svg>
+                    清除
+                </button>
+            </div>
         </div>
         
         <div id="result">
@@ -612,10 +685,11 @@
             <div class="info-section">
                 <h2 class="text-lg font-semibold mb-2">說明</h2>
                 <ul class="list-disc pl-5">
-                    <li>在下方輸入分數的分子與分母。分子需為非負數且小於或等於分母，分母需大於 0（例如：1/2、1/1）。</li>
+                    <li>在上方輸入分數的分子與分母。分子需為非負數且小於或等於分母，分母需大於 0（例如：1/2、1/1）。</li>
                     <li>點擊綠色「新增分數」按鈕可新增分數輸入框；點擊紅色垃圾桶圖示可刪除分數（當分數數量大於兩個時可見）。</li>
-                    <li>輸入或修改分數時，網站會即時計算並在「加總結果」顯示簡化後的分數（例如：<span class="whole-number">1</span> 4/15 或 1/1）。</li>
+                    <li>輸入或修改分數時，網站會即時計算並在「加總結果」顯示簡化後的分數（例如：<span class="whole-number">1</span>4/15 或 1/1）。</li>
                     <li>點擊藍色「計算」按鈕，確認最終結果，顯示簡化與未簡化（若適用）的加總結果，並在「詳細計算」中查看約分與通分後的分數。</li>
+                    <li>點擊橘色「清除」按鈕，清空所有分數輸入框並重置結果。</li>
                     <li>使用右上角「主題」按鈕切換淺色、深色或系統主題模式。</li>
                 </ul>
             </div>
@@ -702,10 +776,10 @@
             return { num: num / g, den: den / g };
         }
 
-        // 格式化分數（確保分子等於分母時顯示，例如 1/1, 15/15；大於 1 時顯示整數 + 半形空格 + 分數；整數加框）
+        // 格式化分數（確保分子等於分母時顯示，例如 1/1, 15/15；大於 1 時顯示整數+分數；整數加框）
         function formatFraction(num, den) {
             if (num === den && num !== 0) {
-                return `<span class="fraction-numerator">${num}</span> / <span class="fraction-denominator">${den}</span>`;
+                return `<span class="fraction-numerator">${num}</span>/<span class="fraction-denominator">${den}</span>`;
             }
             if (num > den) {
                 const whole = Math.floor(num / den);
@@ -713,9 +787,9 @@
                 if (remainder === 0) {
                     return `<span class="whole-number">${whole}</span>`;
                 }
-                return `<span class="whole-number">${whole}</span> <span class="fraction-numerator">${remainder}</span> / <span class="fraction-denominator">${den}</span>`;
+                return `<span class="whole-number">${whole}</span><span class="fraction-numerator">${remainder}</span>/<span class="fraction-denominator">${den}</span>`;
             }
-            return `<span class="fraction-numerator">${num}</span> / <span class="fraction-denominator">${den}</span>`;
+            return `<span class="fraction-numerator">${num}</span>/<span class="fraction-denominator">${den}</span>`;
         }
 
         // 分數加總
@@ -803,10 +877,11 @@
                 <div class="info-section">
                     <h2 class="text-lg font-semibold mb-2">說明</h2>
                     <ul class="list-disc pl-5">
-                        <li>在下方輸入分數的分子與分母。分子需為非負數且小於或等於分母，分母需大於 0（例如：1/2、1/1）。</li>
+                        <li>在上方輸入分數的分子與分母。分子需為非負數且小於或等於分母，分母需大於 0（例如：1/2、1/1）。</li>
                         <li>點擊綠色「新增分數」按鈕可新增分數輸入框；點擊紅色垃圾桶圖示可刪除分數（當分數數量大於兩個時可見）。</li>
-                        <li>輸入或修改分數時，網站會即時計算並在「加總結果」顯示簡化後的分數（例如：<span class="whole-number">1</span> 4/15 或 1/1）。</li>
+                        <li>輸入或修改分數時，網站會即時計算並在「加總結果」顯示簡化後的分數（例如：<span class="whole-number">1</span>4/15 或 1/1）。</li>
                         <li>點擊藍色「計算」按鈕，確認最終結果，顯示簡化與未簡化（若適用）的加總結果，並在「詳細計算」中查看約分與通分後的分數。</li>
+                        <li>點擊橘色「清除」按鈕，清空所有分數輸入框並重置結果。</li>
                         <li>使用右上角「主題」按鈕切換淺色、深色或系統主題模式。</li>
                     </ul>
                 </div>`;
@@ -832,7 +907,7 @@
             const div = document.createElement('div');
             div.className = 'fraction-input';
             div.innerHTML = `
-                <label>分數 ${count}:</label>
+                <label>分數 ${count}<span class="label-divider"></span></label>
                 <input type="number" class="numerator" placeholder="分子" required>
                 <span class="slash">/</span>
                 <input type="number" class="denominator" placeholder="分母" required min="1">
@@ -856,7 +931,7 @@
                 if (container.children.length > 2) {
                     e.target.closest('.fraction-input').remove();
                     Array.from(container.children).forEach((div, index) => {
-                        div.querySelector('label').textContent = `分數 ${index + 1}:`;
+                        div.querySelector('label').innerHTML = `分數 ${index + 1}<span class="label-divider"></span>`;
                     });
                     updateDeleteButtonVisibility();
                     calculateRealtime();
@@ -865,6 +940,18 @@
                     calculateRealtime();
                 }
             }
+        });
+
+        // 清除所有輸入
+        document.getElementById('clear-all').addEventListener('click', function() {
+            const inputs = document.querySelectorAll('.numerator, .denominator');
+            inputs.forEach(input => {
+                input.value = '';
+                input.classList.remove('error');
+            });
+            const errorMessages = document.querySelectorAll('.error-message');
+            errorMessages.forEach(msg => msg.textContent = '');
+            calculateRealtime();
         });
 
         // 更新刪除按鈕的可見性
@@ -931,11 +1018,12 @@
                 <div class="info-section">
                     <h2 class="text-lg font-semibold mb-2">說明</h2>
                     <ul class="list-disc pl-5">
-                        <li>在下方輸入分數的分子與分母。分子需為非負數且小於或等於分母，分母需大於 0（例如：1/2、1/1）。</li>
-                        <li>點擊綠色「新增分數」按鈕可新增分數輸入框；點擊紅色垃圾桶圖示可刪除分數（當分數數量大於兩個時可見）。</li>
-                        <li>輸入或修改分數時，網站會即時計算並在「加總結果」顯示簡化後的分數（例如：<span class="whole-number">1</span> 4/15 或 1/1）。</li>
-                        <li>點擊藍色「計算」按鈕，確認最終結果，顯示簡化與未簡化（若適用）的加總結果，並在「詳細計算」中查看約分與通分後的分數。</li>
-                        <li>使用右上角「主題」按鈕切換淺色、深色或系統主題模式。</li>
+                        <li>輸入分數的分子與分母來進行分數的計算。分子需為非負數且小於或等於分母，分母需大於 0（例如：1/2、1/1）。</li>
+                        <li>點按綠色「新增分數」按鈕可新增分數輸入框；當計算的分數超過 3 個時，則可點按紅色垃圾桶圖示來刪除不想要的分數。</li>
+                        <li>輸入或修改分數時，網站會即時計算並在「加總結果」顯示簡化後的分數（例如：<span class="whole-number">1</span>4/15 或 1/1）。</li>
+                        <li>點按藍色「計算」按鈕來確認最終結果，將會顯示簡化與未簡化（若適用）的加總結果，並可在「詳細計算」中查看約分與通分後的各個分數。</li>
+                        <li>點按橘色「清除」按鈕，清空所有已輸入的分數並重置結果。</li>
+                        <li>點按右上角「主題」按鈕可以根據自己的喜好來切換淺色、深色或系統主題模式。</li>
                     </ul>
                 </div>`;
 
