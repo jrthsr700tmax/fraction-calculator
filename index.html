@@ -136,7 +136,6 @@
             border-radius: 12px;
             transition: transform 0.3s ease;
             position: relative;
-            flex-wrap: wrap;
         }
         .fraction-input:hover {
             transform: translateY(-2px);
@@ -158,6 +157,10 @@
         input[type="number"]:focus {
             outline: none;
             box-shadow: 0 0 0 2px rgba(0, 122, 255, 0.5);
+        }
+        .slash {
+            color: var(--text-primary);
+            font-size: 1rem;
         }
         .error {
             border: 2px solid var(--text-error);
@@ -258,6 +261,19 @@
             text-align: center;
             margin-top: 0.5rem;
         }
+        .whole-number {
+            border: 1px solid var(--text-primary);
+            border-radius: 4px;
+            padding: 0.1rem 0.3rem;
+            margin-right: 0.3rem;
+            display: inline-block;
+        }
+        [data-theme="dark"] .whole-number {
+            border-color: var(--text-primary);
+        }
+        .fraction-numerator, .fraction-denominator {
+            padding: 0 0.2rem;
+        }
         h1 {
             font-size: 1.8rem;
             font-weight: 600;
@@ -306,6 +322,8 @@
             gap: 0.5rem;
             cursor: pointer;
             color: var(--text-dark);
+            min-width: 5rem;
+            white-space: nowrap;
         }
         .theme-toggle svg {
             width: 20px;
@@ -385,7 +403,6 @@
                 align-items: center;
                 gap: 0.5rem;
                 padding: 0.5rem;
-                flex-wrap: wrap;
             }
             input[type="number"] {
                 width: 70px;
@@ -394,10 +411,35 @@
             }
             .fraction-input label {
                 font-size: 0.9rem;
+                order: 1;
+            }
+            .fraction-input .numerator {
+                order: 2;
+            }
+            .fraction-input .slash {
+                order: 3;
+                font-size: 0.9rem;
+            }
+            .fraction-input .denominator {
+                order: 4;
+            }
+            .fraction-input .delete-button {
+                order: 5;
+                margin-top: 0;
+                padding: 0.3rem;
+                width: auto;
+                display: flex;
+                margin-left: auto;
+            }
+            .delete-button svg {
+                width: 14px;
+                height: 14px;
             }
             .error-message {
                 font-size: 0.7rem;
+                position: absolute;
                 bottom: -1rem;
+                left: 0.5rem;
                 width: 100%;
             }
             .icon-button {
@@ -409,15 +451,6 @@
                 width: 18px;
                 height: 18px;
             }
-            .delete-button {
-                margin-top: 0.5rem;
-                width: 100%;
-                justify-content: flex-start;
-            }
-            .delete-button svg {
-                width: 16px;
-                height: 16px;
-            }
             .sum-result {
                 font-size: 1.5rem;
             }
@@ -426,6 +459,13 @@
             }
             .non-simplified-sum {
                 font-size: 0.9rem;
+            }
+            .whole-number {
+                padding: 0.1rem 0.2rem;
+                margin-right: 0.2rem;
+            }
+            .fraction-numerator, .fraction-denominator {
+                padding: 0 0.15rem;
             }
             .sum-section, .details-section, .info-section {
                 padding: 0.75rem;
@@ -438,6 +478,7 @@
             }
             .theme-toggle {
                 padding: 0.4rem;
+                min-width: 4.5rem;
             }
             .theme-toggle svg {
                 width: 18px;
@@ -522,7 +563,8 @@
         <div id="fractions-container">
             <div class="fraction-input">
                 <label>分數 1:</label>
-                <input type="number" class="numerator" placeholder="分子" required> /
+                <input type="number" class="numerator" placeholder="分子" required>
+                <span class="slash">/</span>
                 <input type="number" class="denominator" placeholder="分母" required min="1">
                 <button class="delete-button" title="刪除分數">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
@@ -533,7 +575,8 @@
             </div>
             <div class="fraction-input">
                 <label>分數 2:</label>
-                <input type="number" class="numerator" placeholder="分子" required> /
+                <input type="number" class="numerator" placeholder="分子" required>
+                <span class="slash">/</span>
                 <input type="number" class="denominator" placeholder="分母" required min="1">
                 <button class="delete-button" title="刪除分數">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
@@ -567,9 +610,9 @@
             <div class="info-section">
                 <h2 class="text-lg font-semibold mb-2">說明</h2>
                 <ul class="list-disc pl-5">
-                    <li>在下方輸入分數的分子與分母。分子絕對值需小於或等於分母，分母需大於 0（例如：1/2、1/1）。</li>
+                    <li>在下方輸入分數的分子與分母。分子需為非負數且小於或等於分母，分母需大於 0（例如：1/2、1/1）。</li>
                     <li>點擊綠色「新增分數」按鈕可新增分數輸入框；點擊紅色垃圾桶圖示可刪除分數（當分數數量大於兩個時可見）。</li>
-                    <li>輸入或修改分數時，網站會即時計算並在「加總結果」顯示簡化後的分數（例如：1 4/15 或 1/1）。</li>
+                    <li>輸入或修改分數時，網站會即時計算並在「加總結果」顯示簡化後的分數（例如：<span class="whole-number">1</span> 4/15 或 1/1）。</li>
                     <li>點擊藍色「計算」按鈕，確認最終結果，顯示簡化與未簡化（若適用）的加總結果，並在「詳細計算」中查看約分與通分後的分數。</li>
                     <li>使用右上角「主題」按鈕切換淺色、深色或系統主題模式。</li>
                 </ul>
@@ -657,17 +700,20 @@
             return { num: num / g, den: den / g };
         }
 
-        // 格式化分數（確保分子等於分母時顯示，例如 1/1, 15/15；大於 1 時顯示整數 + 半形空格 + 分數）
+        // 格式化分數（確保分子等於分母時顯示，例如 1/1, 15/15；大於 1 時顯示整數 + 半形空格 + 分數；整數加框）
         function formatFraction(num, den) {
             if (num === den && num !== 0) {
-                return `${num}/${den}`; // Explicitly show 1/1, 15/15, -1/1, etc.
+                return `<span class="fraction-numerator">${num}</span> / <span class="fraction-denominator">${den}</span>`;
             }
-            if (Math.abs(num) > den) {
+            if (num > den) {
                 const whole = Math.floor(num / den);
                 const remainder = num % den;
-                return remainder === 0 ? `${whole}` : `${whole} ${Math.abs(remainder)}/${den}`; // Use half-width space
+                if (remainder === 0) {
+                    return `<span class="whole-number">${whole}</span>`;
+                }
+                return `<span class="whole-number">${whole}</span> <span class="fraction-numerator">${remainder}</span> / <span class="fraction-denominator">${den}</span>`;
             }
-            return `${num}/${den}`;
+            return `<span class="fraction-numerator">${num}</span> / <span class="fraction-denominator">${den}</span>`;
         }
 
         // 分數加總
@@ -700,9 +746,14 @@
                 errorMessageDiv.textContent = `分數 ${index + 1}: 分母必須大於 0`;
                 return false;
             }
-            if (Math.abs(num) > den) {
+            if (num < 0) {
                 numInput.classList.add('error');
-                errorMessageDiv.textContent = `分數 ${index + 1}: 分子 (${num}) 的絕對值必須小於或等於分母 (${den})`;
+                errorMessageDiv.textContent = `分數 ${index + 1}: 分子必須為非負數`;
+                return false;
+            }
+            if (num > den) {
+                numInput.classList.add('error');
+                errorMessageDiv.textContent = `分數 ${index + 1}: 分子 (${num}) 必須小於或等於分母 (${den})`;
                 return false;
             }
             return true;
@@ -750,9 +801,9 @@
                 <div class="info-section">
                     <h2 class="text-lg font-semibold mb-2">說明</h2>
                     <ul class="list-disc pl-5">
-                        <li>在下方輸入分數的分子與分母。分子絕對值需小於或等於分母，分母需大於 0（例如：1/2、-1/1）。</li>
+                        <li>在下方輸入分數的分子與分母。分子需為非負數且小於或等於分母，分母需大於 0（例如：1/2、1/1）。</li>
                         <li>點擊綠色「新增分數」按鈕可新增分數輸入框；點擊紅色垃圾桶圖示可刪除分數（當分數數量大於兩個時可見）。</li>
-                        <li>輸入或修改分數時，網站會即時計算並在「加總結果」顯示簡化後的分數（例如：1 4/15 或 1/1）。</li>
+                        <li>輸入或修改分數時，網站會即時計算並在「加總結果」顯示簡化後的分數（例如：<span class="whole-number">1</span> 4/15 或 1/1）。</li>
                         <li>點擊藍色「計算」按鈕，確認最終結果，顯示簡化與未簡化（若適用）的加總結果，並在「詳細計算」中查看約分與通分後的分數。</li>
                         <li>使用右上角「主題」按鈕切換淺色、深色或系統主題模式。</li>
                     </ul>
@@ -780,7 +831,8 @@
             div.className = 'fraction-input';
             div.innerHTML = `
                 <label>分數 ${count}:</label>
-                <input type="number" class="numerator" placeholder="分子" required> /
+                <input type="number" class="numerator" placeholder="分子" required>
+                <span class="slash">/</span>
                 <input type="number" class="denominator" placeholder="分母" required min="1">
                 <button class="delete-button" title="刪除分數">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
@@ -877,9 +929,9 @@
                 <div class="info-section">
                     <h2 class="text-lg font-semibold mb-2">說明</h2>
                     <ul class="list-disc pl-5">
-                        <li>在下方輸入分數的分子與分母。分子絕對值需小於或等於分母，分母需大於 0（例如：1/2、-1/1）。</li>
+                        <li>在下方輸入分數的分子與分母。分子需為非負數且小於或等於分母，分母需大於 0（例如：1/2、1/1）。</li>
                         <li>點擊綠色「新增分數」按鈕可新增分數輸入框；點擊紅色垃圾桶圖示可刪除分數（當分數數量大於兩個時可見）。</li>
-                        <li>輸入或修改分數時，網站會即時計算並在「加總結果」顯示簡化後的分數（例如：1 4/15 或 1/1）。</li>
+                        <li>輸入或修改分數時，網站會即時計算並在「加總結果」顯示簡化後的分數（例如：<span class="whole-number">1</span> 4/15 或 1/1）。</li>
                         <li>點擊藍色「計算」按鈕，確認最終結果，顯示簡化與未簡化（若適用）的加總結果，並在「詳細計算」中查看約分與通分後的分數。</li>
                         <li>使用右上角「主題」按鈕切換淺色、深色或系統主題模式。</li>
                     </ul>
