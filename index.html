@@ -317,6 +317,53 @@
         .fraction-example {
             white-space: nowrap;
         }
+        .button-icon {
+            display: inline-block;
+            vertical-align: middle;
+            margin: 0 0.2rem;
+            cursor: default;
+            pointer-events: none;
+        }
+        .button-color-square {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 24px;
+            height: 24px;
+            border-radius: 4px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+            flex-shrink: 0;
+            box-sizing: border-box;
+            overflow: hidden;
+        }
+        .button-color-square svg {
+            width: 16px;
+            height: 16px;
+            fill: var(--icon-fill);
+            min-width: 16px;
+            max-width: 16px;
+            min-height: 16px;
+            max-height: 16px;
+            display: block;
+            margin: auto;
+            position: relative;
+            transform: translate(0, 0);
+        }
+        .button-color-square.add-fraction {
+            background: var(--add-button-bg);
+        }
+        .button-color-square.calculate {
+            background: var(--calc-button-bg);
+        }
+        .button-color-square.clear-all {
+            background: var(--clear-button-bg);
+        }
+        .button-color-square.delete-icon {
+            background: var(--delete-button-bg);
+        }
+        .button-color-square.theme-icon {
+            background: var(--fraction-bg);
+        }
         h1 {
             font-size: 1.8rem;
             font-weight: 600;
@@ -545,6 +592,22 @@
             .fraction-numerator, .fraction-denominator {
                 padding: 0 0.15rem;
             }
+            .button-color-square {
+                width: 20px;
+                height: 20px;
+            }
+            .button-color-square svg {
+                width: 14px;
+                height: 14px;
+                min-width: 14px;
+                max-width: 14px;
+                min-height: 14px;
+                max-height: 14px;
+                display: block;
+                margin: auto;
+                position: relative;
+                transform: translate(0, 0);
+            }
             .sum-section, .details-section, .info-section {
                 padding: 0.75rem;
             }
@@ -732,11 +795,11 @@
                 <h2 class="text-lg font-semibold mb-2">說明</h2>
                 <ul class="list-disc pl-5">
                     <li>在輸入區域輸入分數來進行計算。分子需為非負數且小於或等於分母；分母需大於 0（例如：1/2、1/1）。</li>
-                    <li>點按綠色「新增分數」按鈕來新增分數；當輸入的分數超過 2 個時，則可點按右側紅色垃圾桶圖示來刪除不想要的分數。</li>
+                    <li>點按<span class="button-icon"><span class="button-color-square add-fraction"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm5 11h-4v4h-2v-4H7v-2h4V7h2v4h4v2z"/></svg></span></span>來新增分數；當輸入的分數超過 2 個時，則可點按右側<span class="button-icon"><span class="button-color-square delete-icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg></span></span>來刪除不想要的分數。</li>
                     <li>輸入或修改分數時，網站會即時計算並在「加總結果」顯示簡化後的分數。當計算結果的分數帶有整數時，其整數會帶有刷淡圓角矩形以利辨識，如「<b class="fraction-example"><span class="whole-number">1</span><span class="fraction-numerator">4</span>/<span class="fraction-denominator">15</span></b>」；當計算結果不帶整數時，則會顯示「<b><span class="fraction-numerator">1</span>/<span class="fraction-denominator">1</span></b>」。</li>
-                    <li>點按藍色「計算」按鈕來確認最終結果，將會顯示最約分與最通分（如有）的加總結果，並可在「詳細計算」中查看約分與通分後的各個分數。</li>
-                    <li>點按橘色「清除」按鈕，清空所有已輸入的分數並重置計算結果。</li>
-                    <li>點按右上角「主題」按鈕可以根據自己的喜好來切換淺色、深色或系統主題模式。</li>
+                    <li>點按<span class="button-icon"><span class="button-color-square calculate"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14h-2v-2h2v2zm0-4h-2v-2h2v2zm-4 4H8v-2h2v2zm0-4H8v-2h2v2zm8 0h-2v-2h2v2zm0-4h-2V7h2v2z"/></svg></span></span>來確認最終結果，將會顯示最約分與最通分（如有）的加總結果，並可在「詳細計算」中查看約分與通分後的各個分數。</li>
+                    <li>點按<span class="button-icon"><span class="button-color-square clear-all"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M18.3 5.71a.996.996 0 00-1.41 0L12 10.59 7.11 5.7a.996.996 0 00-1.41 0c-.39.39-.39 1.02 0 1.41L10.59 12 5.7 16.89a.996.996 0 000 1.41c.39.39 1.02.39 1.41 0L12 13.41l4.89 4.89c.39.39 1.02.39 1.41 0 .39-.39.39-1.02 0-1.41L13.41 12l4.89-4.89c.38-.38.38-1.02 0-1.4z"/></svg></span></span>，清空所有已輸入的分數並重置計算結果。</li>
+                    <li>點按右上角<span class="button-icon"><span class="button-color-square theme-icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 3a9 9 0 109 9c0-.46-.04-.92-.1-1.36a5.389 5.389 0 01-4.4 2.26 5.403 5.403 0 01-3.14-9.8c-.44-.06-.90-.1-1.36-.1z"/></svg></span></span>可以根據自己的喜好來切換淺色、深色或系統主題模式。</li>
                 </ul>
             </div>
         </div>
@@ -924,11 +987,11 @@
                     <h2 class="text-lg font-semibold mb-2">說明</h2>
                     <ul class="list-disc pl-5">
                         <li>在輸入區域輸入分數來進行計算。分子需為非負數且小於或等於分母；分母需大於 0（例如：1/2、1/1）。</li>
-                        <li>點按綠色「新增分數」按鈕來新增分數；當輸入的分數超過 2 個時，則可點按右側紅色垃圾桶圖示來刪除不想要的分數。</li>
+                        <li>點按<span class="button-icon"><span class="button-color-square add-fraction"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm5 11h-4v4h-2v-4H7v-2h4V7h2v4h4v2z"/></svg></span></span>來新增分數；當輸入的分數超過 2 個時，則可點按右側<span class="button-icon"><span class="button-color-square delete-icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg></span></span>來刪除不想要的分數。</li>
                         <li>輸入或修改分數時，網站會即時計算並在「加總結果」顯示簡化後的分數。當計算結果的分數帶有整數時，其整數會帶有刷淡圓角矩形以利辨識，如「<b class="fraction-example"><span class="whole-number">1</span><span class="fraction-numerator">4</span>/<span class="fraction-denominator">15</span></b>」；當計算結果不帶整數時，則會顯示「<b><span class="fraction-numerator">1</span>/<span class="fraction-denominator">1</span></b>」。</li>
-                        <li>點按藍色「計算」按鈕來確認最終結果，將會顯示最約分與最通分（如有）的加總結果，並可在「詳細計算」中查看約分與通分後的各個分數。</li>
-                        <li>點按橘色「清除」按鈕，清空所有已輸入的分數並重置計算結果。</li>
-                        <li>點按右上角「主題」按鈕可以根據自己的喜好來切換淺色、深色或系統主題模式。</li>
+                        <li>點按<span class="button-icon"><span class="button-color-square calculate"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14h-2v-2h2v2zm0-4h-2v-2h2v2zm-4 4H8v-2h2v2zm0-4H8v-2h2v2zm8 0h-2v-2h2v2zm0-4h-2V7h2v2z"/></svg></span></span>來確認最終結果，將會顯示最約分與最通分（如有）的加總結果，並可在「詳細計算」中查看約分與通分後的各個分數。</li>
+                        <li>點按<span class="button-icon"><span class="button-color-square clear-all"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M18.3 5.71a.996.996 0 00-1.41 0L12 10.59 7.11 5.7a.996.996 0 00-1.41 0c-.39.39-.39 1.02 0 1.41L10.59 12 5.7 16.89a.996.996 0 000 1.41c.39.39 1.02.39 1.41 0L12 13.41l4.89 4.89c.39.39 1.02.39 1.41 0 .39-.39.39-1.02 0-1.41L13.41 12l4.89-4.89c.38-.38.38-1.02 0-1.4z"/></svg></span></span>，清空所有已輸入的分數並重置計算結果。</li>
+                        <li>點按右上角<span class="button-icon"><span class="button-color-square theme-icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 3a9 9 0 109 9c0-.46-.04-.92-.1-1.36a5.389 5.389 0 01-4.4 2.26 5.403 5.403 0 01-3.14-9.8c-.44-.06-.90-.1-1.36-.1z"/></svg></span></span>可以根據自己的喜好來切換淺色、深色或系統主題模式。</li>
                     </ul>
                 </div>`;
             document.getElementById('result').innerHTML = resultHTML;
@@ -1067,14 +1130,13 @@
                     <h2 class="text-lg font-semibold mb-2">說明</h2>
                     <ul class="list-disc pl-5">
                         <li>在輸入區域輸入分數來進行計算。分子需為非負數且小於或等於分母；分母需大於 0（例如：1/2、1/1）。</li>
-                        <li>點按綠色「新增分數」按鈕來新增分數；當輸入的分數超過 2 個時，則可點按右側紅色垃圾桶圖示來刪除不想要的分數。</li>
+                        <li>點按<span class="button-icon"><span class="button-color-square add-fraction"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm5 11h-4v4h-2v-4H7v-2h4V7h2v4h4v2z"/></svg></span></span>來新增分數；當輸入的分數超過 2 個時，則可點按右側<span class="button-icon"><span class="button-color-square delete-icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg></span></span>來刪除不想要的分數。</li>
                         <li>輸入或修改分數時，網站會即時計算並在「加總結果」顯示簡化後的分數。當計算結果的分數帶有整數時，其整數會帶有刷淡圓角矩形以利辨識，如「<b class="fraction-example"><span class="whole-number">1</span><span class="fraction-numerator">4</span>/<span class="fraction-denominator">15</span></b>」；當計算結果不帶整數時，則會顯示「<b><span class="fraction-numerator">1</span>/<span class="fraction-denominator">1</span></b>」。</li>
-                        <li>點按藍色「計算」按鈕來確認最終結果，將會顯示最約分與最通分（如有）的加總結果，並可在「詳細計算」中查看約分與通分後的各個分數。</li>
-                        <li>點按橘色「清除」按鈕，清空所有已輸入的分數並重置計算結果。</li>
-                        <li>點按右上角「主題」按鈕可以根據自己的喜好來切換淺色、深色或系統主題模式。</li>
+                        <li>點按<span class="button-icon"><span class="button-color-square calculate"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14h-2v-2h2v2zm0-4h-2v-2h2v2zm-4 4H8v-2h2v2zm0-4H8v-2h2v2zm8 0h-2v-2h2v2zm0-4h-2V7h2v2z"/></svg></span></span>來確認最終結果，將會顯示最約分與最通分（如有）的加總結果，並可在「詳細計算」中查看約分與通分後的各個分數。</li>
+                        <li>點按<span class="button-icon"><span class="button-color-square clear-all"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M18.3 5.71a.996.996 0 00-1.41 0L12 10.59 7.11 5.7a.996.996 0 00-1.41 0c-.39.39-.39 1.02 0 1.41L10.59 12 5.7 16.89a.996.996 0 000 1.41c.39.39 1.02.39 1.41 0L12 13.41l4.89 4.89c.39.39 1.02.39 1.41 0 .39-.39.39-1.02 0-1.41L13.41 12l4.89-4.89c.38-.38.38-1.02 0-1.4z"/></svg></span></span>，清空所有已輸入的分數並重置計算結果。</li>
+                        <li>點按右上角<span class="button-icon"><span class="button-color-square theme-icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 3a9 9 0 109 9c0-.46-.04-.92-.1-1.36a5.389 5.389 0 01-4.4 2.26 5.403 5.403 0 01-3.14-9.8c-.44-.06-.90-.1-1.36-.1z"/></svg></span></span>可以根據自己的喜好來切換淺色、深色或系統主題模式。</li>
                     </ul>
                 </div>`;
-
             document.getElementById('result').innerHTML = resultHTML;
         });
     </script>
