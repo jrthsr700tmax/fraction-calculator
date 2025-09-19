@@ -1,43 +1,4 @@
-<script type="text/javascript">
-        var gk_isXlsx = false;
-        var gk_xlsxFileLookup = {};
-        var gk_fileData = {};
-        function filledCell(cell) {
-          return cell !== '' && cell != null;
-        }
-        function loadFileData(filename) {
-        if (gk_isXlsx && gk_xlsxFileLookup[filename]) {
-            try {
-                var workbook = XLSX.read(gk_fileData[filename], { type: 'base64' });
-                var firstSheetName = workbook.SheetNames[0];
-                var worksheet = workbook.Sheets[firstSheetName];
-
-                // Convert sheet to JSON to filter blank rows
-                var jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1, blankrows: false, defval: '' });
-                // Filter out blank rows (rows where all cells are empty, null, or undefined)
-                var filteredData = jsonData.filter(row => row.some(filledCell));
-
-                // Heuristic to find the header row by ignoring rows with fewer filled cells than the next row
-                var headerRowIndex = filteredData.findIndex((row, index) =>
-                  row.filter(filledCell).length >= filteredData[index + 1]?.filter(filledCell).length
-                );
-                // Fallback
-                if (headerRowIndex === -1 || headerRowIndex > 25) {
-                  headerRowIndex = 0;
-                }
-
-                // Convert filtered JSON back to CSV
-                var csv = XLSX.utils.aoa_to_sheet(filteredData.slice(headerRowIndex)); // Create a new sheet from filtered array of arrays
-                csv = XLSX.utils.sheet_to_csv(csv, { header: 1 });
-                return csv;
-            } catch (e) {
-                console.error(e);
-                return "";
-            }
-        }
-        return gk_fileData[filename] || "";
-        }
-        </script><!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="zh-TW">
 <head>
     <meta charset="UTF-8">
@@ -302,15 +263,53 @@
             text-align: center;
             margin-top: 0.5rem;
         }
-        .whole-number {
-            border: 1px solid var(--text-primary);
+        .sum-result .whole-number {
+            background-color: rgba(0, 122, 255, 0.16);
+            color: var(--text-sum);
             border-radius: 4px;
             padding: 0.1rem 0.3rem;
             margin-right: 0.3rem;
             display: inline-block;
         }
-        [data-theme="dark"] .whole-number {
-            border-color: var(--text-primary);
+        .realtime-sum-result .whole-number {
+            background-color: rgba(74, 74, 74, 0.16);
+            color: var(--text-secondary);
+            border-radius: 4px;
+            padding: 0.1rem 0.3rem;
+            margin-right: 0.3rem;
+            display: inline-block;
+        }
+        .non-simplified-sum .whole-number {
+            background-color: rgba(74, 74, 74, 0.16);
+            color: var(--text-secondary);
+            border-radius: 4px;
+            padding: 0.1rem 0.3rem;
+            margin-right: 0.3rem;
+            display: inline-block;
+        }
+        .info-section .whole-number {
+            background-color: rgba(26, 26, 26, 0.16);
+            color: var(--text-primary);
+            border-radius: 4px;
+            padding: 0.1rem 0.3rem;
+            margin-right: 0.3rem;
+            display: inline-block;
+        }
+        [data-theme="dark"] .sum-result .whole-number {
+            background-color: rgba(77, 171, 247, 0.16);
+            color: var(--text-sum);
+        }
+        [data-theme="dark"] .realtime-sum-result .whole-number {
+            background-color: rgba(176, 176, 176, 0.16);
+            color: var(--text-secondary);
+        }
+        [data-theme="dark"] .non-simplified-sum .whole-number {
+            background-color: rgba(176, 176, 176, 0.16);
+            color: var(--text-secondary);
+        }
+        [data-theme="dark"] .info-section .whole-number {
+            background-color: rgba(255, 255, 255, 0.16);
+            color: var(--text-primary);
         }
         .fraction-numerator, .fraction-denominator {
             padding: 0 0.2rem;
@@ -338,6 +337,14 @@
         }
         details > ul {
             padding: 1rem;
+        }
+        .info-section ul li,
+        .details-section ul li {
+            margin-bottom: 0.75rem;
+        }
+        .info-section ul li:last-child,
+        .details-section ul li:last-child {
+            margin-bottom: 0;
         }
         summary {
             padding: 0.75rem;
@@ -492,19 +499,22 @@
                 width: 100%;
             }
             .button-container {
-                flex-direction: column;
+                display: flex;
+                flex-direction: row;
+                align-items: center;
                 gap: 0.5rem;
             }
             .adjacent-buttons {
-                flex-direction: column;
-                gap: 0.5rem;
-                width: 100%;
+                display: flex;
+                flex-direction: row;
+                gap: 0.25rem;
             }
             .flex-grow {
-                display: none;
+                display: block;
+                flex-grow: 1;
             }
             .icon-button {
-                width: 100%;
+                width: 100px;
                 padding: 0.5rem;
                 font-size: 0.9rem;
             }
@@ -521,7 +531,10 @@
             .non-simplified-sum {
                 font-size: 0.9rem;
             }
-            .whole-number {
+            .sum-result .whole-number,
+            .realtime-sum-result .whole-number,
+            .non-simplified-sum .whole-number,
+            .info-section .whole-number {
                 padding: 0.1rem 0.2rem;
                 margin-right: 0.2rem;
             }
@@ -533,6 +546,14 @@
             }
             details > ul, .info-section ul {
                 padding: 0.75rem;
+            }
+            .info-section ul li,
+            .details-section ul li {
+                margin-bottom: 0.5rem;
+            }
+            .info-section ul li:last-child,
+            .details-section ul li:last-child {
+                margin-bottom: 0;
             }
             details > hr {
                 margin: 0.4rem 0;
@@ -555,6 +576,27 @@
             .theme-menu button svg {
                 width: 14px;
                 height: 14px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            #add-fraction span {
+                display: none;
+            }
+            #add-fraction {
+                width: 40px;
+                padding: 0.5rem;
+            }
+            #add-fraction svg {
+                width: 20px;
+                height: 20px;
+            }
+            .icon-button:not(#add-fraction) {
+                width: 80px;
+                font-size: 0.8rem;
+            }
+            .adjacent-buttons {
+                gap: 0.2rem;
             }
         }
 
@@ -597,7 +639,7 @@
         <div class="theme-toggle-container">
             <button class="theme-toggle" id="theme-toggle" title="切換主題">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-                    <path d="M12 3a9 9 0 109 9c0-.46-.04-.92-.1-1.36a5.389 5.389 0 01-4.4 2.26 5.403 5.403 0 01-3.14-9.8c-.44-.06-.9-.1-1.36-.1z"/>
+                    <path d="M12 3a9 9 0 109 9c0-.46-.04-.92-.1-1.36a5.389 5.389 0 01-4.4 2.26 5.403 5.403 0 01-3.14-9.8c-.44-.06-.90-.1-1.36-.1z"/>
                 </svg>
                 主題
             </button>
@@ -610,7 +652,7 @@
                 </button>
                 <button data-theme="dark">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-                        <path d="M12 3a9 9 0 109 9c0-.46-.04-.92-.1-1.36a5.389 5.389 0 01-4.4 2.26 5.403 5.403 0 01-3.14-9.8c-.44-.06-.9-.1-1.36-.1z"/>
+                        <path d="M12 3a9 9 0 109 9c0-.46-.04-.92-.1-1.36a5.389 5.389 0 01-4.4 2.26 5.403 5.403 0 01-3.14-9.8c-.44-.06-.90-.1-1.36-.1z"/>
                     </svg>
                     深色
                 </button>
@@ -658,7 +700,7 @@
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
                     <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm5 11h-4v4h-2v-4H7v-2h4V7h2v4h4v2z"/>
                 </svg>
-                新增分數
+                <span>新增分數</span>
             </button>
             <div class="flex-grow"></div>
             <div class="adjacent-buttons">
@@ -680,17 +722,17 @@
         <div id="result">
             <div class="sum-section">
                 <h2 class="text-lg font-semibold mb-2">加總結果</h2>
-                <div class="realtime-sum-result">請輸入至少兩個有效分數</div>
+                <div class="realtime-sum-result">輸入兩組有效的分數來進行計算</div>
             </div>
             <div class="info-section">
                 <h2 class="text-lg font-semibold mb-2">說明</h2>
                 <ul class="list-disc pl-5">
-                        <li>輸入分數的分子與分母來進行分數的計算。分子需為非負數且小於或等於分母，分母需大於 0（例如：1/2、1/1）。</li>
-                        <li>點按綠色「新增分數」按鈕可新增分數輸入框；當計算的分數超過 3 個時，則可點按紅色垃圾桶圖示來刪除不想要的分數。</li>
-                        <li>輸入或修改分數時，網站會即時計算並在「加總結果」顯示簡化後的分數。當計算結果的分數帶有整數時，其整數會帶有外框以利辨識，如「<bold><span class="whole-number">1</span>4/15</bold>」；當計算結果不帶整數時，則顯示「<bold>1/1</bold>」。</li>
-                        <li>點按藍色「計算」按鈕來確認最終結果，將會顯示簡化與未簡化（若適用）的加總結果，並可在「詳細計算」中查看約分與通分後的各個分數。</li>
-                        <li>點按橘色「清除」按鈕，清空所有已輸入的分數並重置結果。</li>
-                        <li>點按右上角「主題」按鈕可以根據自己的喜好來切換淺色、深色或系統主題模式。</li>
+                    <li>在輸入區域輸入分數來進行計算。分子需為非負數且小於或等於分母；分母需大於 0（例如：1/2、1/1）。</li>
+                    <li>點按綠色「新增分數」按鈕來新增分數；當輸入的分數超過 2 個時，則可點按右側紅色垃圾桶圖示來刪除不想要的分數。</li>
+                    <li>輸入或修改分數時，網站會即時計算並在「加總結果」顯示簡化後的分數。當計算結果的分數帶有整數時，其整數會帶有刷淡圓角矩形以利辨識，如「<b><span class="whole-number">1</span><span class="fraction-numerator">4</span>/<span class="fraction-denominator">15</span></b>」；當計算結果不帶整數時，則會顯示「<b><span class="fraction-numerator">1</span>/<span class="fraction-denominator">1</span></b>」。</li>
+                    <li>點按藍色「計算」按鈕來確認最終結果，將會顯示最約分與最通分（如有）的加總結果，並可在「詳細計算」中查看約分與通分後的各個分數。</li>
+                    <li>點按橘色「清除」按鈕，清空所有已輸入的分數並重置計算結果。</li>
+                    <li>點按右上角「主題」按鈕可以根據自己的喜好來切換淺色、深色或系統主題模式。</li>
                 </ul>
             </div>
         </div>
@@ -776,7 +818,7 @@
             return { num: num / g, den: den / g };
         }
 
-        // 格式化分數（確保分子等於分母時顯示，例如 1/1, 15/15；大於 1 時顯示整數+分數；整數加框）
+        // 格式化分數（確保分子等於分母時顯示，例如 1/1, 15/15；大於 1 時顯示整數+分數）
         function formatFraction(num, den) {
             if (num === den && num !== 0) {
                 return `<span class="fraction-numerator">${num}</span>/<span class="fraction-denominator">${den}</span>`;
@@ -868,7 +910,7 @@
                     <h2 class="text-lg font-semibold mb-2">加總結果</h2>
             `;
             if (validFractions.length < 2) {
-                resultHTML += `<div class="realtime-sum-result">請輸入至少兩個有效分數</div>`;
+                resultHTML += `<div class="realtime-sum-result">輸入兩組有效的分數來進行計算</div>`;
             } else {
                 const { simplified: sumFraction } = addFractions(validFractions);
                 resultHTML += `<div class="realtime-sum-result">${formatFraction(sumFraction.num, sumFraction.den)}</div>`;
@@ -877,11 +919,11 @@
                 <div class="info-section">
                     <h2 class="text-lg font-semibold mb-2">說明</h2>
                     <ul class="list-disc pl-5">
-                        <li>輸入分數的分子與分母來進行分數的計算。分子需為非負數且小於或等於分母，分母需大於 0（例如：1/2、1/1）。</li>
-                        <li>點按綠色「新增分數」按鈕可新增分數輸入框；當計算的分數超過 3 個時，則可點按紅色垃圾桶圖示來刪除不想要的分數。</li>
-                        <li>輸入或修改分數時，網站會即時計算並在「加總結果」顯示簡化後的分數。當計算結果的分數帶有整數時，其整數會帶有外框以利辨識，如「<bold><span class="whole-number">1</span>4/15</bold>」；當計算結果不帶整數時，則顯示「<bold>1/1</bold>」。</li>
-                        <li>點按藍色「計算」按鈕來確認最終結果，將會顯示簡化與未簡化（若適用）的加總結果，並可在「詳細計算」中查看約分與通分後的各個分數。</li>
-                        <li>點按橘色「清除」按鈕，清空所有已輸入的分數並重置結果。</li>
+                        <li>在輸入區域輸入分數來進行計算。分子需為非負數且小於或等於分母；分母需大於 0（例如：1/2、1/1）。</li>
+                        <li>點按綠色「新增分數」按鈕來新增分數；當輸入的分數超過 2 個時，則可點按右側紅色垃圾桶圖示來刪除不想要的分數。</li>
+                        <li>輸入或修改分數時，網站會即時計算並在「加總結果」顯示簡化後的分數。當計算結果的分數帶有整數時，其整數會帶有刷淡圓角矩形以利辨識，如「<b><span class="whole-number">1</span><span class="fraction-numerator">4</span>/<span class="fraction-denominator">15</span></b>」；當計算結果不帶整數時，則會顯示「<b><span class="fraction-numerator">1</span>/<span class="fraction-denominator">1</span></b>」。</li>
+                        <li>點按藍色「計算」按鈕來確認最終結果，將會顯示最約分與最通分（如有）的加總結果，並可在「詳細計算」中查看約分與通分後的各個分數。</li>
+                        <li>點按橘色「清除」按鈕，清空所有已輸入的分數並重置計算結果。</li>
                         <li>點按右上角「主題」按鈕可以根據自己的喜好來切換淺色、深色或系統主題模式。</li>
                     </ul>
                 </div>`;
@@ -992,14 +1034,15 @@
                 <div class="sum-section">
                     <h2 class="text-lg font-semibold mb-2">加總結果</h2>
                     <div class="sum-result">${formatFraction(sumFraction.num, sumFraction.den)}</div>
-                    ${showNonSimplified ? `<div class="non-simplified-sum">(未約分：${formatFraction(nonSimplifiedSum.num, nonSimplifiedSum.den)})</div>` : ''}
+                    ${showNonSimplified ? `<div class="non-simplified-sum">未約分：${formatFraction(nonSimplifiedSum.num, nonSimplifiedSum.den)}</div>` : ''}
                 </div>
                 <div class="details-section">
                     <h2 class="text-lg font-semibold mb-2">詳細計算</h2>
                     <details>
                         <summary>約分後的分數</summary>
                         <hr>
-                        <ul class="list-disc pl-5 mt-2">`;
+                        <ul class="list-disc pl-5 mt-2">
+            `;
             simplified.forEach((f, i) => {
                 resultHTML += `<li>分數 ${i+1}: ${f.num}/${f.den}</li>`;
             });
@@ -1008,7 +1051,8 @@
                     <details>
                         <summary>通分後的分數（共同分母：${commonDen}）</summary>
                         <hr>
-                        <ul class="list-disc pl-5 mt-2">`;
+                        <ul class="list-disc pl-5 mt-2">
+            `;
             commonFractions.forEach((f, i) => {
                 resultHTML += `<li>分數 ${i+1}: ${f.num}/${f.den}</li>`;
             });
@@ -1018,11 +1062,11 @@
                 <div class="info-section">
                     <h2 class="text-lg font-semibold mb-2">說明</h2>
                     <ul class="list-disc pl-5">
-                        <li>輸入分數的分子與分母來進行分數的計算。分子需為非負數且小於或等於分母，分母需大於 0（例如：1/2、1/1）。</li>
-                        <li>點按綠色「新增分數」按鈕可新增分數輸入框；當計算的分數超過 3 個時，則可點按紅色垃圾桶圖示來刪除不想要的分數。</li>
-                        <li>輸入或修改分數時，網站會即時計算並在「加總結果」顯示簡化後的分數。當計算結果的分數帶有整數時，其整數會帶有外框以利辨識，如「<bold><span class="whole-number">1</span>4/15</bold>」；當計算結果不帶整數時，則顯示「<bold>1/1</bold>」。</li>
-                        <li>點按藍色「計算」按鈕來確認最終結果，將會顯示簡化與未簡化（若適用）的加總結果，並可在「詳細計算」中查看約分與通分後的各個分數。</li>
-                        <li>點按橘色「清除」按鈕，清空所有已輸入的分數並重置結果。</li>
+                        <li>在輸入區域輸入分數來進行計算。分子需為非負數且小於或等於分母；分母需大於 0（例如：1/2、1/1）。</li>
+                        <li>點按綠色「新增分數」按鈕來新增分數；當輸入的分數超過 2 個時，則可點按右側紅色垃圾桶圖示來刪除不想要的分數。</li>
+                        <li>輸入或修改分數時，網站會即時計算並在「加總結果」顯示簡化後的分數。當計算結果的分數帶有整數時，其整數會帶有刷淡圓角矩形以利辨識，如「<b><span class="whole-number">1</span><span class="fraction-numerator">4</span>/<span class="fraction-denominator">15</span></b>」；當計算結果不帶整數時，則會顯示「<b><span class="fraction-numerator">1</span>/<span class="fraction-denominator">1</span></b>」。</li>
+                        <li>點按藍色「計算」按鈕來確認最終結果，將會顯示最約分與最通分（如有）的加總結果，並可在「詳細計算」中查看約分與通分後的各個分數。</li>
+                        <li>點按橘色「清除」按鈕，清空所有已輸入的分數並重置計算結果。</li>
                         <li>點按右上角「主題」按鈕可以根據自己的喜好來切換淺色、深色或系統主題模式。</li>
                     </ul>
                 </div>`;
