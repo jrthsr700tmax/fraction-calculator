@@ -1,0 +1,748 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <title>分數計算機</title>
+
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%236200ee'%3E%3Cpath d='M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V5h14v14zm-7-2h2v-2h-2v2zm-4 0h2v-2H8v2zm0-4h2v-2H8v2zm4 0h2v-2h-2v2zm4 4h2v-2h-2v2zm0-4h2v-2h-2v2z'/%3E%3C/svg%3E" type="image/svg+xml">
+
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+    
+    <style>
+        /* ========================================================== */
+        /* Design Tokens                                              */
+        /* ========================================================== */
+        :root {
+            --bg-primary: #f2f5fa;
+            --bg-card: #ffffff;
+            --text-primary: #1c1c20;
+            --text-secondary: #5e5e65;
+            
+            --accent-color: #6200ee;
+            --accent-gradient: linear-gradient(135deg, #6200ee, #b81ec9);
+            --accent-light: #eaddff;
+            --accent-bg-subtle: rgba(98, 0, 238, 0.05);
+            
+            --border-color: #e0e2e8;
+            --radius-default: 16px;
+            --radius-pill: 50px;
+            
+            --shadow-sm: 0 1px 2px rgba(0,0,0,0.05);
+            --shadow-md: 0 4px 12px rgba(0,0,0,0.08);
+            --shadow-float: 0 8px 32px rgba(98, 0, 238, 0.15);
+            
+            --error-color: #ba1a1a;
+            --success-color: #198754;
+            
+            --glass-bg: rgba(255, 255, 255, 0.85);
+            --glass-blur: blur(20px);
+        }
+
+        [data-theme="dark"] {
+            --bg-primary: #141218;
+            --bg-card: #211f26;
+            --text-primary: #e6e1e5;
+            --text-secondary: #cac4d0;
+            --accent-color: #d0bcff;
+            --accent-gradient: linear-gradient(135deg, #d0bcff, #aeb9ff);
+            --accent-light: #4f378b;
+            --accent-bg-subtle: rgba(208, 188, 255, 0.08);
+            --border-color: #49454f;
+            --glass-bg: rgba(33, 31, 38, 0.85);
+            --shadow-float: 0 8px 32px rgba(0, 0, 0, 0.4);
+        }
+
+        body {
+            font-family: -apple-system, SF Pro, Hiragino Sans, PingFang TC, Segoe UI, system-ui !important;
+            margin: 0;
+            padding: 40px 5%; 
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            transition: background-color 0.3s, color 0.3s;
+            line-height: 1.5;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            box-sizing: border-box; 
+        }
+
+        .container {
+            width: 100%;
+            max-width: 800px;
+            background: var(--bg-card);
+            border-radius: var(--radius-default);
+            box-shadow: var(--shadow-md);
+            padding: 30px;
+            position: relative;
+            box-sizing: border-box;
+            transition: width 0.3s ease;
+        }
+
+        @media (min-width: 1024px) {
+            .container { max-width: none; width: 67vw; }
+        }
+
+        /* Top Controls */
+        .top-controls {
+            position: absolute; top: 20px; right: 20px; display: flex; gap: 12px; z-index: 20;
+            align-items: center; flex-wrap: wrap; justify-content: flex-end;
+        }
+
+        .custom-select { position: relative; font-size: 0.9em; min-width: 140px; }
+        .select-trigger {
+            display: flex; justify-content: space-between; align-items: center; padding: 0 14px; height: 40px;
+            background: var(--bg-primary); border: 1px solid var(--border-color); border-radius: var(--radius-pill);
+            cursor: pointer; color: var(--text-primary); transition: all 0.2s; font-family: inherit; width: 100%; box-sizing: border-box;
+        }
+        .select-trigger:hover { border-color: var(--accent-color); }
+        .trigger-content { display: flex; align-items: center; gap: 8px; }
+        .select-options {
+            position: absolute; top: 48px; right: 0; width: 100%; min-width: 150px;
+            background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 12px;
+            box-shadow: var(--shadow-md); display: none; z-index: 30; overflow: hidden; animation: slideDown 0.2s ease;
+        }
+        @keyframes slideDown { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
+        .select-options.open { display: block; }
+        .option {
+            padding: 10px 16px; cursor: pointer; transition: background 0.2s; color: var(--text-primary);
+            display: flex; align-items: center; gap: 10px;
+        }
+        .option:hover { background: var(--bg-primary); color: var(--accent-color); }
+        .option.selected { background: var(--accent-bg-subtle); font-weight: bold; color: var(--accent-color); }
+
+        /* Header */
+        .app-title {
+            text-align: center; margin: 0 0 25px 0; font-size: 1.8em; font-weight: 700;
+            background: var(--accent-gradient); -webkit-background-clip: text; background-clip: text;
+            color: transparent; text-shadow: 0px 2px 4px rgba(0,0,0,0.05); letter-spacing: -0.02em; margin-top: 40px;
+        }
+        [data-theme="dark"] .app-title { text-shadow: none; }
+
+        .mode-switcher {
+            display: flex; background: var(--bg-primary); padding: 4px; border-radius: var(--radius-pill);
+            margin-bottom: 25px; position: relative; border: 1px solid var(--border-color);
+            max-width: 400px; margin-left: auto; margin-right: auto;
+        }
+        .mode-input { display: none; }
+        .mode-label {
+            flex: 1; text-align: center; padding: 10px; cursor: pointer; z-index: 2;
+            color: var(--text-secondary); font-weight: 500; border-radius: var(--radius-pill);
+            transition: color 0.2s; display: flex; align-items: center; justify-content: center; gap: 6px;
+        }
+        .mode-bg {
+            position: absolute; top: 4px; left: 4px; width: calc(50% - 4px); height: calc(100% - 8px);
+            background: var(--bg-card); border-radius: var(--radius-pill); box-shadow: var(--shadow-sm);
+            transition: transform 0.3s cubic-bezier(0.4, 0.0, 0.2, 1); z-index: 1;
+        }
+        #mode-sum:checked ~ .mode-bg { transform: translateX(0); }
+        #mode-calc:checked ~ .mode-bg { transform: translateX(100%); }
+        #mode-sum:checked ~ label[for="mode-sum"], #mode-calc:checked ~ label[for="mode-calc"] { color: var(--accent-color); font-weight: bold; }
+
+        /* Fraction Inputs */
+        .fraction-list { display: flex; flex-direction: column; gap: 12px; margin-bottom: 20px; }
+        .fraction-row { display: flex; align-items: center; gap: 10px; animation: fadeIn 0.3s ease-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(-5px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* Row Index */
+        .row-index {
+            font-family: SF Mono, monospace;
+            font-size: 1em;
+            color: var(--accent-color);
+            font-weight: 700;
+            width: 30px; 
+            text-align: center;
+            flex-shrink: 0;
+            opacity: 0.8;
+        }
+
+        .operator-container { width: 60px; display: flex; justify-content: center; align-items: center; flex-shrink: 0; visibility: visible; }
+        .operator-select {
+            padding: 8px; border-radius: 8px; border: 1px solid var(--border-color);
+            background: var(--bg-card); color: var(--text-primary); font-size: 1.1em;
+            cursor: pointer; width: 100%; text-align: center; font-family: inherit;
+        }
+        .fixed-plus { display: none; font-size: 1.5em; color: var(--text-secondary); font-weight: bold; }
+        body[data-mode="sum"] .operator-select { display: none; }
+        body[data-mode="sum"] .fixed-plus { display: block; }
+        
+        .fraction-input-wrapper {
+            flex: 1; display: flex; align-items: center; background: var(--bg-primary);
+            border: 1px solid transparent; border-radius: 12px; padding: 4px; transition: all 0.2s;
+        }
+        .fraction-input-wrapper:focus-within { background: var(--bg-card); border-color: var(--accent-color); box-shadow: 0 0 0 2px var(--accent-light); }
+        .num-input {
+            width: 100%; border: none; background: transparent; text-align: center;
+            font-size: 1.2em; padding: 10px; color: var(--text-primary); outline: none; font-family: inherit;
+        }
+        .separator { color: var(--text-secondary); font-weight: 300; font-size: 1.8em; padding: 0 5px; }
+
+        .icon-btn {
+            background: transparent; border: none; color: var(--text-secondary); cursor: pointer;
+            padding: 10px; border-radius: 50%; display: flex; align-items: center;
+            transition: background 0.2s, color 0.2s; flex-shrink: 0;
+        }
+        .icon-btn:hover:not(:disabled) { background: var(--border-color); color: var(--error-color); }
+        .icon-btn:disabled { opacity: 0.3; cursor: not-allowed; }
+        
+        .delete-btn { display: flex; } 
+
+        .btn-group { display: flex; flex-wrap: wrap; gap: 15px; margin-top: 25px; }
+        .btn {
+            padding: 14px 24px; border-radius: 12px; border: none; font-size: 1em; font-weight: 600;
+            cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px;
+            transition: transform 0.1s, box-shadow 0.2s; flex: 1; font-family: inherit;
+        }
+        .btn:active { transform: scale(0.98); }
+        .btn-primary { background: var(--accent-color); color: #fff; box-shadow: var(--shadow-float); min-width: 200px; }
+        .btn-secondary { background: var(--bg-primary); color: var(--text-primary); border: 1px solid var(--border-color); }
+        .btn-secondary:hover { background: var(--border-color); }
+
+        /* Result Area */
+        #result-area {
+            margin-top: 30px; padding: 30px; border-radius: var(--radius-default);
+            background: var(--glass-bg); backdrop-filter: var(--glass-blur);
+            -webkit-backdrop-filter: var(--glass-blur); border: 1px solid var(--border-color);
+            text-align: center; transition: all 0.3s; display: none; position: relative;
+        }
+        .result-label { font-size: 0.9em; text-transform: uppercase; letter-spacing: 1.2px; color: var(--text-secondary); margin-bottom: 15px; }
+        .result-value-container { width: 100%; overflow-x: auto; padding-bottom: 10px; }
+        .result-value {
+            font-size: 3em; font-weight: 800; background: var(--accent-gradient);
+            -webkit-background-clip: text; background-clip: text; color: transparent;
+            line-height: 1.2; white-space: nowrap; display: inline-block; min-width: 100%;
+            text-shadow: 0px 2px 4px rgba(0,0,0,0.1); font-variant-numeric: tabular-nums;
+        }
+        [data-theme="dark"] .result-value { text-shadow: 0px 2px 10px rgba(208, 188, 255, 0.3); }
+        .result-expression { font-size: 1em; color: var(--text-secondary); margin-top: 15px; font-family: SF Mono, monospace; word-break: break-all; }
+
+        .copy-actions { display: flex; justify-content: center; gap: 10px; margin-top: 20px; flex-wrap: wrap; }
+        .copy-btn {
+            padding: 8px 12px; font-size: 0.85em; border-radius: 8px; border: 1px solid var(--border-color);
+            background: var(--bg-card); color: var(--text-secondary); cursor: pointer; display: flex;
+            align-items: center; gap: 5px; transition: all 0.2s; font-family: inherit;
+        }
+        .copy-btn:hover { background: var(--bg-primary); color: var(--accent-color); border-color: var(--accent-color); }
+        .copy-btn:active { transform: scale(0.95); }
+
+        #toast {
+            position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%);
+            background: var(--text-primary); color: var(--bg-card); padding: 10px 20px;
+            border-radius: var(--radius-pill); box-shadow: var(--shadow-float);
+            font-size: 0.9em; opacity: 0; transition: opacity 0.3s; pointer-events: none; z-index: 1000;
+        }
+        .show-toast { opacity: 1 !important; }
+
+        /* Steps */
+        #educational-steps {
+            margin-top: 40px; text-align: left; display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px; border-top: 1px dashed var(--border-color); padding-top: 30px;
+        }
+        .step-card { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: var(--radius-default); padding: 20px; box-shadow: var(--shadow-sm); }
+        .step-title { font-size: 1.1em; font-weight: 700; color: var(--accent-color); margin-bottom: 15px; display: flex; align-items: center; gap: 8px; }
+        .step-content { font-size: 0.95em; color: var(--text-primary); }
+        .math-row {
+            margin-bottom: 12px; padding: 8px; background-color: var(--accent-bg-subtle);
+            border-radius: 8px; font-family: SF Mono, monospace; display: flex; flex-direction: column; gap: 4px;
+        }
+        .math-note { font-size: 0.8em; color: var(--text-secondary); font-family: -apple-system, sans-serif; }
+
+        @media (max-width: 600px) {
+            body { padding: 20px 10px; }
+            .container { padding: 20px; width: 100%; }
+            .btn-group { flex-direction: column; }
+            .result-value { font-size: 2.2em; }
+            #educational-steps { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body data-mode="sum"> 
+    <div id="toast">已複製！</div>
+
+    <div class="container">
+        <div class="top-controls">
+            <div class="custom-select" id="lang-select">
+                <button class="select-trigger" id="lang-trigger">
+                    <div class="trigger-content">
+                        <span class="material-symbols-rounded">language</span>
+                        <span id="current-lang-text">正體中文</span>
+                    </div>
+                    <span class="material-symbols-rounded">expand_more</span>
+                </button>
+                <div class="select-options" id="lang-options">
+                    <div class="option selected" data-value="zh-TW">正體中文</div>
+                    <div class="option" data-value="en">English</div>
+                    <div class="option" data-value="ja">日本語</div>
+                    <div class="option" data-value="ko">한국어</div>
+                    <div class="option" data-value="zh-CN">简体中文</div>
+                </div>
+            </div>
+
+            <div class="custom-select" id="theme-select" style="min-width: 140px;">
+                <button class="select-trigger" id="theme-trigger">
+                    <div class="trigger-content">
+                        <span class="material-symbols-rounded" id="current-theme-icon">auto_mode</span>
+                        <span id="current-theme-text" data-i18n="theme_system">跟隨系統</span>
+                    </div>
+                    <span class="material-symbols-rounded">expand_more</span>
+                </button>
+                <div class="select-options" id="theme-options">
+                    <div class="option selected" data-value="system">
+                        <span class="material-symbols-rounded">auto_mode</span>
+                        <span data-i18n="theme_system">跟隨系統</span>
+                    </div>
+                    <div class="option" data-value="light">
+                        <span class="material-symbols-rounded">light_mode</span>
+                        <span data-i18n="theme_light">淺色</span>
+                    </div>
+                    <div class="option" data-value="dark">
+                        <span class="material-symbols-rounded">dark_mode</span>
+                        <span data-i18n="theme_dark">深色</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <h1 class="app-title" data-i18n="title">分數運算工具</h1>
+
+        <div class="mode-switcher">
+            <input type="radio" name="mode" id="mode-sum" class="mode-input" value="sum" checked onchange="setMode('sum')">
+            <input type="radio" name="mode" id="mode-calc" class="mode-input" value="calc" onchange="setMode('calc')">
+            
+            <div class="mode-bg"></div>
+            
+            <label for="mode-sum" class="mode-label">
+                <span class="material-symbols-rounded">add_circle</span> <span data-i18n="mode_sum">加總模式</span>
+            </label>
+            <label for="mode-calc" class="mode-label">
+                <span class="material-symbols-rounded">calculate</span> <span data-i18n="mode_calc">運算模式</span>
+            </label>
+        </div>
+
+        <div class="fraction-list" id="fraction-list"></div>
+
+        <button class="btn btn-secondary" onclick="addFraction()" style="width:100%; border-style:dashed; opacity:0.8;">
+            <span class="material-symbols-rounded">add</span> <span data-i18n="add_btn">新增分數</span>
+        </button>
+
+        <div class="btn-group">
+            <button class="btn btn-primary" onclick="calculate(true)">
+                <span class="material-symbols-rounded">equal</span> <span data-i18n="calc_btn">開始計算</span>
+            </button>
+            <button class="btn btn-secondary" onclick="resetForm()">
+                <span class="material-symbols-rounded">refresh</span> <span data-i18n="reset_btn">重置</span>
+            </button>
+        </div>
+
+        <div id="result-area">
+            <div class="result-label" data-i18n="result_label">最終結果</div>
+            <div class="result-value-container">
+                <div class="result-value" id="final-result" data-num="" data-den="">--</div>
+            </div>
+            
+            <div class="copy-actions">
+                <button class="copy-btn" onclick="copyResult('all')">
+                    <span class="material-symbols-rounded" style="font-size:16px">content_copy</span>
+                    <span data-i18n="btn_copy_all">複製結果</span>
+                </button>
+                <button class="copy-btn" onclick="copyResult('num')">
+                    <span class="material-symbols-rounded" style="font-size:16px">north</span>
+                    <span data-i18n="btn_copy_num">僅分子</span>
+                </button>
+                <button class="copy-btn" onclick="copyResult('den')">
+                    <span class="material-symbols-rounded" style="font-size:16px">south</span>
+                    <span data-i18n="btn_copy_den">僅分母</span>
+                </button>
+            </div>
+
+            <div class="result-expression" id="calc-process">--</div>
+            
+            <div id="educational-steps">
+                <div class="step-card">
+                    <div class="step-title"><span class="material-symbols-rounded">content_cut</span> <span data-i18n="step_simplify">個別約分</span></div>
+                    <div class="step-content" id="step-simplify"></div>
+                </div>
+                <div class="step-card">
+                    <div class="step-title"><span class="material-symbols-rounded">join_inner</span> <span data-i18n="step_common">通分過程</span></div>
+                    <div class="step-content" id="step-common"></div>
+                </div>
+                <div class="step-card">
+                    <div class="step-title"><span class="material-symbols-rounded">open_in_full</span> <span data-i18n="step_expand">擴分範例</span></div>
+                    <div class="step-content" id="step-expand"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ============================================
+        // 0. Language & Theme Setup
+        // ============================================
+        let currentLang = 'zh-TW';
+        const translations = {
+            'zh-TW': {
+                title: "分數運算工具", mode_sum: "加總模式", mode_calc: "運算模式",
+                add_btn: "新增分數", calc_btn: "開始計算", reset_btn: "重置",
+                result_label: "最終結果", step_simplify: "個別約分 (Simplification)",
+                step_common: "通分過程 (Common Denominator)", step_expand: "擴分範例 (Expansion)",
+                placeholder_num: "分子", placeholder_den: "分母",
+                alert_fill: "請填寫所有欄位", alert_zero: "分母不能為 0", alert_min_rows: "至少需要保留兩組分數",
+                text_group: "第", text_group_suffix: "組", text_gcd: "使用公約數",
+                text_simplify_done: "目前的輸入分數已是最簡分數，無需約分。", text_lcm: "最小公倍數 (分母)", text_expand_factor: "擴分倍數",
+                btn_copy_all: "複製結果", btn_copy_num: "僅分子", btn_copy_den: "僅分母", msg_copied: "已複製！",
+                theme_system: "跟隨系統", theme_light: "淺色", theme_dark: "深色"
+            },
+            'en': {
+                title: "Fraction Calculator", mode_sum: "Sum Mode", mode_calc: "Calc Mode",
+                add_btn: "Add Fraction", calc_btn: "Calculate", reset_btn: "Reset",
+                result_label: "Final Result", step_simplify: "Simplification",
+                step_common: "Common Denominator", step_expand: "Expansion Example",
+                placeholder_num: "Num", placeholder_den: "Denom",
+                alert_fill: "Please fill in all fields", alert_zero: "Denominator cannot be 0", alert_min_rows: "At least two fractions required",
+                text_group: "Group", text_group_suffix: "", text_gcd: "GCD",
+                text_simplify_done: "Fractions are already simplified.", text_lcm: "LCM (Denominator)", text_expand_factor: "Factor",
+                btn_copy_all: "Copy Result", btn_copy_num: "Numerator", btn_copy_den: "Denominator", msg_copied: "Copied!",
+                theme_system: "System", theme_light: "Light", theme_dark: "Dark"
+            },
+            'ja': {
+                title: "分数計算ツール", mode_sum: "合計モード", mode_calc: "計算モード",
+                add_btn: "分数を追加", calc_btn: "計算する", reset_btn: "リセット",
+                result_label: "計算結果", step_simplify: "約分 (Simplification)",
+                step_common: "通分 (Common Denominator)", step_expand: "拡分 (Expansion)",
+                placeholder_num: "分子", placeholder_den: "分母",
+                alert_fill: "すべての項目を入力してください", alert_zero: "分母は0にできません", alert_min_rows: "少なくとも2つの分数が必要です",
+                text_group: "第", text_group_suffix: "項", text_gcd: "最大公約数",
+                text_simplify_done: "既約分数です。約分は不要です。", text_lcm: "最小公倍数 (分母)", text_expand_factor: "拡分倍率",
+                btn_copy_all: "結果をコピー", btn_copy_num: "分子のみ", btn_copy_den: "分母のみ", msg_copied: "コピーしました！",
+                theme_system: "システム", theme_light: "ライト", theme_dark: "ダーク"
+            },
+            'ko': {
+                title: "분수 계산기", mode_sum: "합계 모드", mode_calc: "계산 모드",
+                add_btn: "분수 추가", calc_btn: "계산하기", reset_btn: "초기화",
+                result_label: "최종 결과", step_simplify: "개별 약분 (Simplification)",
+                step_common: "통분 과정 (Common Denominator)", step_expand: "확분 예시 (Expansion)",
+                placeholder_num: "분자", placeholder_den: "분모",
+                alert_fill: "모든 필드를 입력해 주세요", alert_zero: "분모는 0이 될 수 없습니다", alert_min_rows: "최소 두 개의 분수가 필요합니다",
+                text_group: "제", text_group_suffix: "항", text_gcd: "최대공약수",
+                text_simplify_done: "이미 기약분수 상태입니다.", text_lcm: "최소공배수 (분모)", text_expand_factor: "배수",
+                btn_copy_all: "결과 복사", btn_copy_num: "분자만", btn_copy_den: "분모만", msg_copied: "복사되었습니다!",
+                theme_system: "시스템", theme_light: "라이트", theme_dark: "다크"
+            },
+            'zh-CN': {
+                title: "分数运算工具", mode_sum: "加总模式", mode_calc: "运算模式",
+                add_btn: "新增分数", calc_btn: "开始计算", reset_btn: "重置",
+                result_label: "最终结果", step_simplify: "个别约分 (Simplification)",
+                step_common: "通分过程 (Common Denominator)", step_expand: "扩分范例 (Expansion)",
+                placeholder_num: "分子", placeholder_den: "分母",
+                alert_fill: "请填写所有字段", alert_zero: "分母不能为 0", alert_min_rows: "至少需要保留两组分数",
+                text_group: "第", text_group_suffix: "组", text_gcd: "使用公约数",
+                text_simplify_done: "目前的输入分数已是最简分数，无需约分。", text_lcm: "最小公倍数 (分母)", text_expand_factor: "扩分倍数",
+                btn_copy_all: "复制结果", btn_copy_num: "仅分子", btn_copy_den: "仅分母", msg_copied: "已复制！",
+                theme_system: "跟随系统", theme_light: "浅色", theme_dark: "深色"
+            }
+        };
+
+        function setupDropdown(idPrefix, onSelectCallback) {
+            const container = document.getElementById(`${idPrefix}-select`);
+            const trigger = document.getElementById(`${idPrefix}-trigger`);
+            const options = document.getElementById(`${idPrefix}-options`);
+            trigger.addEventListener('click', (e) => {
+                e.stopPropagation();
+                document.querySelectorAll('.select-options').forEach(el => { if(el !== options) el.classList.remove('open'); });
+                options.classList.toggle('open');
+            });
+            options.querySelectorAll('.option').forEach(option => {
+                option.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    const value = option.getAttribute('data-value');
+                    options.querySelectorAll('.option').forEach(opt => opt.classList.remove('selected'));
+                    option.classList.add('selected');
+                    options.classList.remove('open');
+                    onSelectCallback(value, option);
+                });
+            });
+            document.addEventListener('click', (e) => { if (!container.contains(e.target)) options.classList.remove('open'); });
+        }
+
+        setupDropdown('lang', (value, optionElement) => {
+            currentLang = value;
+            document.getElementById('current-lang-text').textContent = optionElement.innerText;
+            updateInterfaceLanguage();
+        });
+
+        setupDropdown('theme', (value, optionElement) => {
+            themeState = value;
+            updateThemeUI(value);
+            applyTheme();
+        });
+
+        function updateInterfaceLanguage(shouldCalc = true) {
+            const t = translations[currentLang];
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                if (t[key]) el.innerText = t[key];
+            });
+            document.querySelectorAll('.num-input').forEach((el, index) => {
+                el.placeholder = (index % 2 === 0) ? t.placeholder_num : t.placeholder_den;
+            });
+            
+            if(shouldCalc && document.getElementById('result-area').style.display !== 'none') {
+                calculate(false);
+            }
+            updateThemeUI(themeState);
+        }
+
+        const systemThemeQuery = window.matchMedia('(prefers-color-scheme: dark)');
+        let themeState = 'system';
+
+        function updateThemeUI(state) {
+            const triggerIcon = document.getElementById('current-theme-icon');
+            const triggerText = document.getElementById('current-theme-text');
+            const t = translations[currentLang];
+            if (state === 'system') { triggerIcon.textContent = 'auto_mode'; triggerText.textContent = t.theme_system; }
+            else if (state === 'light') { triggerIcon.textContent = 'light_mode'; triggerText.textContent = t.theme_light; }
+            else if (state === 'dark') { triggerIcon.textContent = 'dark_mode'; triggerText.textContent = t.theme_dark; }
+        }
+
+        function applyTheme() {
+            let isDark = (themeState === 'system') ? systemThemeQuery.matches : (themeState === 'dark');
+            if (isDark) document.body.setAttribute('data-theme', 'dark');
+            else document.body.removeAttribute('data-theme');
+        }
+
+        systemThemeQuery.addEventListener('change', () => { if (themeState === 'system') applyTheme(); });
+
+        // ============================================
+        // 1. 介面動態管理 (Rows UI State)
+        // ============================================
+        let currentMode = 'sum';
+
+        function setMode(mode) {
+            currentMode = mode;
+            document.body.setAttribute('data-mode', mode);
+            if(document.getElementById('result-area').style.display !== 'none') calculate(false);
+        }
+
+        function createRowHTML(defNum, defDen) {
+            const div = document.createElement('div');
+            div.className = 'fraction-row';
+            const opHTML = `
+                <select class="operator-select">
+                    <option value="add">+</option>
+                    <option value="subtract">-</option>
+                    <option value="multiply">×</option>
+                    <option value="divide">÷</option>
+                </select>
+                <span class="fixed-plus">+</span>
+            `;
+            
+            div.innerHTML = `
+                <div class="row-index"></div>
+                <div class="operator-container">
+                    ${opHTML}
+                </div>
+                <div class="fraction-input-wrapper">
+                    <input type="number" class="num-input" placeholder="${translations[currentLang].placeholder_num}" value="${defNum || ''}">
+                    <span class="separator">/</span>
+                    <input type="number" class="num-input" placeholder="${translations[currentLang].placeholder_den}" value="${defDen || ''}">
+                </div>
+                <button class="icon-btn delete-btn" onclick="removeRow(this)">
+                    <span class="material-symbols-rounded">close</span>
+                </button>
+            `;
+            return div;
+        }
+
+        function updateUIState(shouldCalc = true) {
+            const rows = document.querySelectorAll('.fraction-row');
+            const count = rows.length;
+
+            rows.forEach((row, index) => {
+                // 更新序號
+                const indexLabel = row.querySelector('.row-index');
+                if(indexLabel) indexLabel.textContent = `#${index + 1}`;
+
+                const opContainer = row.querySelector('.operator-container');
+                if (index === 0) {
+                    opContainer.style.visibility = 'hidden';
+                } else {
+                    opContainer.style.visibility = 'visible';
+                }
+
+                const deleteBtn = row.querySelector('.delete-btn');
+                if (count <= 2) {
+                    deleteBtn.style.display = 'none';
+                } else {
+                    deleteBtn.style.display = 'flex';
+                }
+            });
+            updateInterfaceLanguage(shouldCalc); 
+        }
+
+        function initInputs() {
+            const list = document.getElementById('fraction-list');
+            list.innerHTML = '';
+            list.appendChild(createRowHTML(1, 2));
+            list.appendChild(createRowHTML(1, 3));
+            updateUIState();
+        }
+
+        function addFraction() {
+            document.getElementById('fraction-list').appendChild(createRowHTML(null, null));
+            updateUIState(false);
+        }
+
+        function removeRow(btn) {
+            const rows = document.querySelectorAll('.fraction-row');
+            if (rows.length > 2) {
+                btn.closest('.fraction-row').remove();
+                updateUIState(true); 
+            } else {
+                alert(translations[currentLang].alert_min_rows);
+            }
+        }
+
+        function resetForm() {
+            initInputs();
+            document.getElementById('result-area').style.display = 'none';
+        }
+
+        // ============================================
+        // 2. 核心運算
+        // ============================================
+        function gcd(a, b) { return b ? gcd(b, a % b) : a; }
+        function lcm(a, b) { if (a === 0 || b === 0) return 0; return Math.abs(a * b) / gcd(a, b); }
+        function simplify(n, d) { const common = gcd(Math.abs(n), Math.abs(d)); return { n: n / common, d: d / common }; }
+
+        function calculate(isManual = false) {
+            const t = translations[currentLang];
+            const rows = document.querySelectorAll('.fraction-row');
+            const fractions = [];
+            
+            try {
+                let validIndex = 0;
+                rows.forEach((row) => {
+                    const inputs = row.querySelectorAll('input');
+                    const val1 = inputs[0].value.trim();
+                    const val2 = inputs[1].value.trim();
+
+                    if (val1 === '' && val2 === '') return; 
+                    if (val1 === '' || val2 === '') throw new Error(t.alert_fill);
+
+                    const n = parseInt(val1);
+                    const d = parseInt(val2);
+
+                    if (isNaN(n) || isNaN(d)) throw new Error(t.alert_fill);
+                    if (d === 0) throw new Error(t.alert_zero);
+
+                    let op = 'add';
+                    if (validIndex > 0) {
+                        op = (currentMode === 'sum') ? 'add' : row.querySelector('select').value;
+                    }
+                    fractions.push({ n, d, op });
+                    validIndex++;
+                });
+
+                if (fractions.length < 2) {
+                    if (isManual) throw new Error(t.alert_min_rows);
+                    document.getElementById('result-area').style.display = 'none';
+                    return;
+                }
+
+            } catch (e) {
+                if (isManual) alert(e.message);
+                else document.getElementById('result-area').style.display = 'none';
+                return;
+            }
+
+            let current = { n: fractions[0].n, d: fractions[0].d };
+            let expressionString = `${current.n}/${current.d}`;
+
+            for (let i = 1; i < fractions.length; i++) {
+                const next = fractions[i];
+                const opSymbol = next.op === 'add' ? '+' : next.op === 'subtract' ? '-' : next.op === 'multiply' ? '×' : '÷';
+                expressionString += ` ${opSymbol} ${next.n}/${next.d}`;
+                let resN, resD;
+                if (next.op === 'add') { resN = current.n * next.d + next.n * current.d; resD = current.d * next.d; }
+                else if (next.op === 'subtract') { resN = current.n * next.d - next.n * current.d; resD = current.d * next.d; }
+                else if (next.op === 'multiply') { resN = current.n * next.n; resD = current.d * next.d; }
+                else if (next.op === 'divide') { resN = current.n * next.d; resD = current.d * next.n; }
+                current = simplify(resN, resD);
+            }
+            if (current.d < 0) { current.n = -current.n; current.d = -current.d; }
+
+            const resultArea = document.getElementById('result-area');
+            const resultVal = document.getElementById('final-result');
+            const calcProcess = document.getElementById('calc-process');
+
+            resultArea.style.display = 'block';
+            calcProcess.textContent = expressionString + " = ";
+            resultVal.setAttribute('data-num', current.n);
+            resultVal.setAttribute('data-den', current.d);
+
+            if (current.d === 1) resultVal.textContent = current.n;
+            else resultVal.textContent = `${current.n}/${current.d}`;
+
+            generateEducationalDetails(fractions);
+        }
+
+        function generateEducationalDetails(fractions) {
+            const t = translations[currentLang];
+            let simplifyHTML = "", hasSimplify = false;
+            fractions.forEach((f, idx) => {
+                const divisor = gcd(Math.abs(f.n), Math.abs(f.d));
+                if (divisor > 1) {
+                    hasSimplify = true;
+                    // idx+1 for visual order, matching #1, #2
+                    simplifyHTML += `<div class="math-row"><span>${t.text_group} ${idx+1} ${t.text_group_suffix} (${f.n}/${f.d}) ÷ ${divisor} = <strong>${f.n/divisor}/${f.d/divisor}</strong></span><span class="math-note">${t.text_gcd}: ${divisor}</span></div>`;
+                }
+            });
+            document.getElementById('step-simplify').innerHTML = hasSimplify ? simplifyHTML : `<span class="math-note">${t.text_simplify_done}</span>`;
+
+            let denoms = fractions.map(f => f.d);
+            let currentLCM = denoms[0];
+            for(let i=1; i<denoms.length; i++) currentLCM = lcm(currentLCM, denoms[i]);
+
+            let commonHTML = `<div class="math-row" style="background:transparent; padding-left:0;"><strong>${t.text_lcm}: ${currentLCM}</strong></div>`;
+            fractions.forEach((f, idx) => {
+                const multiplier = currentLCM / f.d;
+                commonHTML += `<div class="math-row"><span>${t.text_group} ${idx+1} ${t.text_group_suffix} (${f.n}/${f.d}) × ${multiplier} = <strong>${f.n * multiplier}/${currentLCM}</strong></span><span class="math-note">${t.text_expand_factor}: ${multiplier}</span></div>`;
+            });
+            document.getElementById('step-common').innerHTML = commonHTML;
+
+            let expandHTML = "";
+            fractions.forEach((f, idx) => {
+                expandHTML += `<div class="math-row"><span>${t.text_group} ${idx+1} ${t.text_group_suffix} (${f.n}/${f.d})</span><span class="math-note">×2 = ${f.n*2}/${f.d*2} , ×3 = ${f.n*3}/${f.d*3}</span></div>`;
+            });
+            document.getElementById('step-expand').innerHTML = expandHTML;
+        }
+
+        function copyResult(type) {
+            const resultEl = document.getElementById('final-result');
+            const num = resultEl.getAttribute('data-num');
+            const den = resultEl.getAttribute('data-den');
+            let textToCopy = "";
+            if (!num) return;
+            if (type === 'all') textToCopy = resultEl.textContent;
+            else if (type === 'num') textToCopy = num;
+            else if (type === 'den') textToCopy = den || "1";
+            if (navigator.clipboard && navigator.clipboard.writeText) { navigator.clipboard.writeText(textToCopy).then(showToast); }
+            else { const ta = document.createElement('textarea'); ta.value = textToCopy; document.body.appendChild(ta); ta.select(); document.execCommand('copy'); document.body.removeChild(ta); showToast(); }
+        }
+
+        function showToast() {
+            const toast = document.getElementById('toast');
+            toast.textContent = translations[currentLang].msg_copied;
+            toast.classList.add('show-toast');
+            setTimeout(() => { toast.classList.remove('show-toast'); }, 2000);
+        }
+
+        // Start
+        applyTheme();
+        initInputs();
+    </script>
+</body>
+</html>
