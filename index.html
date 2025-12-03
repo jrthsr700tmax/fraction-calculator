@@ -3,7 +3,6 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    
     <title>分數計算機</title>
 
     <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%236200ee'%3E%3Cpath d='M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V5h14v14zm-7-2h2v-2h-2v2zm-4 0h2v-2H8v2zm0-4h2v-2H8v2zm4 0h2v-2h-2v2zm4 4h2v-2h-2v2zm0-4h2v-2h-2v2z'/%3E%3C/svg%3E" type="image/svg+xml">
@@ -146,7 +145,7 @@
         .fraction-row { display: flex; align-items: center; gap: 10px; animation: fadeIn 0.3s ease-out; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(-5px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* Row Index */
+        /* Row Index (#1, #2) */
         .row-index {
             font-family: SF Mono, monospace;
             font-size: 1em;
@@ -390,8 +389,8 @@
                 step_common: "通分過程 (Common Denominator)", step_expand: "擴分範例 (Expansion)",
                 placeholder_num: "分子", placeholder_den: "分母",
                 alert_fill: "請填寫所有欄位", alert_zero: "分母不能為 0", alert_min_rows: "至少需要保留兩組分數",
-                text_group: "第", text_group_suffix: "組", text_gcd: "使用公約數",
-                text_simplify_done: "目前的輸入分數已是最簡分數，無需約分。", text_lcm: "最小公倍數 (分母)", text_expand_factor: "擴分倍數",
+                text_gcd: "使用公約數", text_simplify_done: "目前的輸入分數已是最簡分數，無需約分。", 
+                text_lcm: "最小公倍數 (分母)", text_expand_factor: "擴分倍數",
                 btn_copy_all: "複製結果", btn_copy_num: "僅分子", btn_copy_den: "僅分母", msg_copied: "已複製！",
                 theme_system: "跟隨系統", theme_light: "淺色", theme_dark: "深色"
             },
@@ -402,8 +401,8 @@
                 step_common: "Common Denominator", step_expand: "Expansion Example",
                 placeholder_num: "Num", placeholder_den: "Denom",
                 alert_fill: "Please fill in all fields", alert_zero: "Denominator cannot be 0", alert_min_rows: "At least two fractions required",
-                text_group: "Group", text_group_suffix: "", text_gcd: "GCD",
-                text_simplify_done: "Fractions are already simplified.", text_lcm: "LCM (Denominator)", text_expand_factor: "Factor",
+                text_gcd: "GCD", text_simplify_done: "Fractions are already simplified.", 
+                text_lcm: "LCM (Denominator)", text_expand_factor: "Factor",
                 btn_copy_all: "Copy Result", btn_copy_num: "Numerator", btn_copy_den: "Denominator", msg_copied: "Copied!",
                 theme_system: "System", theme_light: "Light", theme_dark: "Dark"
             },
@@ -414,8 +413,8 @@
                 step_common: "通分 (Common Denominator)", step_expand: "拡分 (Expansion)",
                 placeholder_num: "分子", placeholder_den: "分母",
                 alert_fill: "すべての項目を入力してください", alert_zero: "分母は0にできません", alert_min_rows: "少なくとも2つの分数が必要です",
-                text_group: "第", text_group_suffix: "項", text_gcd: "最大公約数",
-                text_simplify_done: "既約分数です。約分は不要です。", text_lcm: "最小公倍数 (分母)", text_expand_factor: "拡分倍率",
+                text_gcd: "最大公約数", text_simplify_done: "既約分数です。約分は不要です。", 
+                text_lcm: "最小公倍数 (分母)", text_expand_factor: "拡分倍率",
                 btn_copy_all: "結果をコピー", btn_copy_num: "分子のみ", btn_copy_den: "分母のみ", msg_copied: "コピーしました！",
                 theme_system: "システム", theme_light: "ライト", theme_dark: "ダーク"
             },
@@ -426,8 +425,8 @@
                 step_common: "통분 과정 (Common Denominator)", step_expand: "확분 예시 (Expansion)",
                 placeholder_num: "분자", placeholder_den: "분모",
                 alert_fill: "모든 필드를 입력해 주세요", alert_zero: "분모는 0이 될 수 없습니다", alert_min_rows: "최소 두 개의 분수가 필요합니다",
-                text_group: "제", text_group_suffix: "항", text_gcd: "최대공약수",
-                text_simplify_done: "이미 기약분수 상태입니다.", text_lcm: "최소공배수 (분모)", text_expand_factor: "배수",
+                text_gcd: "최대공약수", text_simplify_done: "이미 기약분수 상태입니다.", 
+                text_lcm: "최소공배수 (분모)", text_expand_factor: "배수",
                 btn_copy_all: "결과 복사", btn_copy_num: "분자만", btn_copy_den: "분모만", msg_copied: "복사되었습니다!",
                 theme_system: "시스템", theme_light: "라이트", theme_dark: "다크"
             },
@@ -438,8 +437,8 @@
                 step_common: "通分过程 (Common Denominator)", step_expand: "扩分范例 (Expansion)",
                 placeholder_num: "分子", placeholder_den: "分母",
                 alert_fill: "请填写所有字段", alert_zero: "分母不能为 0", alert_min_rows: "至少需要保留两组分数",
-                text_group: "第", text_group_suffix: "组", text_gcd: "使用公约数",
-                text_simplify_done: "目前的输入分数已是最简分数，无需约分。", text_lcm: "最小公倍数 (分母)", text_expand_factor: "扩分倍数",
+                text_gcd: "使用公约数", text_simplify_done: "目前的输入分数已是最简分数，无需约分。", 
+                text_lcm: "最小公倍数 (分母)", text_expand_factor: "扩分倍数",
                 btn_copy_all: "复制结果", btn_copy_num: "仅分子", btn_copy_den: "仅分母", msg_copied: "已复制！",
                 theme_system: "跟随系统", theme_light: "浅色", theme_dark: "深色"
             }
@@ -696,8 +695,8 @@
                 const divisor = gcd(Math.abs(f.n), Math.abs(f.d));
                 if (divisor > 1) {
                     hasSimplify = true;
-                    // idx+1 for visual order, matching #1, #2
-                    simplifyHTML += `<div class="math-row"><span>${t.text_group} ${idx+1} ${t.text_group_suffix} (${f.n}/${f.d}) ÷ ${divisor} = <strong>${f.n/divisor}/${f.d/divisor}</strong></span><span class="math-note">${t.text_gcd}: ${divisor}</span></div>`;
+                    // UPDATED: Now uses #n format directly, matching input section
+                    simplifyHTML += `<div class="math-row"><span>#${idx+1} (${f.n}/${f.d}) ÷ ${divisor} = <strong>${f.n/divisor}/${f.d/divisor}</strong></span><span class="math-note">${t.text_gcd}: ${divisor}</span></div>`;
                 }
             });
             document.getElementById('step-simplify').innerHTML = hasSimplify ? simplifyHTML : `<span class="math-note">${t.text_simplify_done}</span>`;
@@ -709,13 +708,13 @@
             let commonHTML = `<div class="math-row" style="background:transparent; padding-left:0;"><strong>${t.text_lcm}: ${currentLCM}</strong></div>`;
             fractions.forEach((f, idx) => {
                 const multiplier = currentLCM / f.d;
-                commonHTML += `<div class="math-row"><span>${t.text_group} ${idx+1} ${t.text_group_suffix} (${f.n}/${f.d}) × ${multiplier} = <strong>${f.n * multiplier}/${currentLCM}</strong></span><span class="math-note">${t.text_expand_factor}: ${multiplier}</span></div>`;
+                commonHTML += `<div class="math-row"><span>#${idx+1} (${f.n}/${f.d}) × ${multiplier} = <strong>${f.n * multiplier}/${currentLCM}</strong></span><span class="math-note">${t.text_expand_factor}: ${multiplier}</span></div>`;
             });
             document.getElementById('step-common').innerHTML = commonHTML;
 
             let expandHTML = "";
             fractions.forEach((f, idx) => {
-                expandHTML += `<div class="math-row"><span>${t.text_group} ${idx+1} ${t.text_group_suffix} (${f.n}/${f.d})</span><span class="math-note">×2 = ${f.n*2}/${f.d*2} , ×3 = ${f.n*3}/${f.d*3}</span></div>`;
+                expandHTML += `<div class="math-row"><span>#${idx+1} (${f.n}/${f.d})</span><span class="math-note">×2 = ${f.n*2}/${f.d*2} , ×3 = ${f.n*3}/${f.d*3}</span></div>`;
             });
             document.getElementById('step-expand').innerHTML = expandHTML;
         }
