@@ -493,6 +493,9 @@
         });
 
         function updateInterfaceLanguage(shouldCalc = true) {
+            // Optimization 1: Set the html lang attribute dynamically
+            document.documentElement.lang = currentLang;
+
             const t = translations[currentLang];
             document.querySelectorAll('[data-i18n]').forEach(el => {
                 const key = el.getAttribute('data-i18n');
@@ -534,6 +537,7 @@
         function initLanguageUI() {
             const langOptions = document.querySelectorAll('#lang-options .option');
             let selectedText = '';
+            
             langOptions.forEach(opt => {
                 if(opt.getAttribute('data-value') === currentLang) {
                     opt.classList.add('selected');
@@ -542,9 +546,11 @@
                     opt.classList.remove('selected');
                 }
             });
+            
             if(selectedText) {
                 document.getElementById('current-lang-text').innerText = selectedText;
             }
+            
             updateInterfaceLanguage(false);
         }
 
@@ -572,7 +578,6 @@
                 <span class="fixed-plus">+</span>
             `;
             
-            // 優化點 1：input 加入 oninput 驗證，並使用 inputmode="numeric" 與 pattern="[0-9]*"
             div.innerHTML = `
                 <div class="row-index"></div>
                 <div class="operator-container">
