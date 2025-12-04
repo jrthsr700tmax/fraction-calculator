@@ -18,23 +18,18 @@
             --bg-card: #ffffff;
             --text-primary: #1c1c20;
             --text-secondary: #5e5e65;
-            
             --accent-color: #6200ee;
             --accent-gradient: linear-gradient(135deg, #6200ee, #b81ec9);
             --accent-light: #eaddff;
             --accent-bg-subtle: rgba(98, 0, 238, 0.05);
-            
             --border-color: #e0e2e8;
             --radius-default: 16px;
             --radius-pill: 50px;
-            
             --shadow-sm: 0 1px 2px rgba(0,0,0,0.05);
             --shadow-md: 0 4px 12px rgba(0,0,0,0.08);
             --shadow-float: 0 8px 32px rgba(98, 0, 238, 0.15);
-            
             --error-color: #ba1a1a;
             --success-color: #198754;
-            
             --glass-bg: rgba(255, 255, 255, 0.85);
             --glass-blur: blur(20px);
         }
@@ -56,7 +51,6 @@
         body {
             font-family: -apple-system, SF Pro, Hiragino Sans, PingFang TC, Segoe UI, system-ui !important;
             margin: 0;
-            /* 預設桌機版間距 */
             padding: 40px 5%; 
             background-color: var(--bg-primary);
             color: var(--text-primary);
@@ -85,43 +79,20 @@
             .container { max-width: none; width: 67vw; }
         }
 
-        /* ========================================================== */
-        /* Top Controls (Responsive Settings)                         */
-        /* ========================================================== */
+        /* Top Controls */
         .top-controls-wrapper {
-            position: absolute;
-            top: 20px;
-            right: 20px;
-            z-index: 100;
+            position: absolute; top: 20px; right: 20px; z-index: 100;
         }
-
         .mobile-settings-btn {
-            width: 44px;
-            height: 44px;
-            border-radius: 50%;
-            background: var(--bg-card);
-            border: 1px solid var(--border-color);
-            color: var(--text-primary);
-            display: none; 
-            justify-content: center;
-            align-items: center;
-            cursor: pointer;
-            box-shadow: var(--shadow-sm);
-            transition: all 0.2s;
+            width: 44px; height: 44px; border-radius: 50%; background: var(--bg-card);
+            border: 1px solid var(--border-color); color: var(--text-primary); display: none; 
+            justify-content: center; align-items: center; cursor: pointer;
+            box-shadow: var(--shadow-sm); transition: all 0.2s;
         }
-
         .mobile-settings-btn:hover, .mobile-settings-btn.active {
-            background: var(--bg-primary);
-            color: var(--accent-color);
-            border-color: var(--accent-color);
+            background: var(--bg-primary); color: var(--accent-color); border-color: var(--accent-color);
         }
-
-        .controls-group {
-            display: flex;
-            gap: 12px;
-            align-items: center;
-        }
-
+        .controls-group { display: flex; gap: 12px; align-items: center; }
         .custom-select { position: relative; font-size: 0.9em; min-width: 140px; }
         .select-trigger {
             display: flex; justify-content: space-between; align-items: center; padding: 0 14px; height: 40px;
@@ -130,7 +101,6 @@
         }
         .select-trigger:hover { border-color: var(--accent-color); }
         .trigger-content { display: flex; align-items: center; gap: 8px; }
-        
         .select-options {
             position: absolute; top: 48px; right: 0; width: 100%; min-width: 150px;
             background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 12px;
@@ -138,7 +108,6 @@
         }
         @keyframes slideDown { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
         .select-options.open { display: block; }
-        
         .option {
             padding: 10px 16px; cursor: pointer; transition: background 0.2s; color: var(--text-primary);
             display: flex; align-items: center; gap: 10px;
@@ -146,57 +115,26 @@
         .option:hover { background: var(--bg-primary); color: var(--accent-color); }
         .option.selected { background: var(--accent-bg-subtle); font-weight: bold; color: var(--accent-color); }
 
-        /* ========================================================== */
-        /* Responsive Logic for Controls & Layout                     */
-        /* ========================================================== */
         @media (max-width: 768px) {
-            /* 優化點 1: 調整行動裝置間距，讓上下左右視覺平衡 */
-            body { 
-                padding: 20px 15px; 
-            }
-            
-            .container { 
-                padding: 25px 20px; 
-                width: 100%; 
-                margin-top: 0; 
-            }
-            
+            body { padding: 20px 15px; }
+            .container { padding: 25px 20px; width: 100%; margin-top: 0; }
             .mobile-settings-btn { display: flex; }
-
             .controls-group {
-                display: none;
-                position: absolute;
-                top: 55px;
-                right: 0;
-                background: var(--bg-card);
-                border: 1px solid var(--border-color);
-                padding: 15px;
-                border-radius: 16px;
-                box-shadow: var(--shadow-md);
-                flex-direction: column;
-                width: 200px;
-                animation: slideDown 0.2s ease;
+                display: none; position: absolute; top: 55px; right: 0;
+                background: var(--bg-card); border: 1px solid var(--border-color);
+                padding: 15px; border-radius: 16px; box-shadow: var(--shadow-md);
+                flex-direction: column; width: 200px; animation: slideDown 0.2s ease;
             }
-
             .controls-group.show { display: flex; }
-
             .custom-select { width: 100%; min-width: unset; }
-            
-            .select-options {
-                position: static;
-                margin-top: 5px;
-                box-shadow: none;
-                border: 1px solid var(--border-color);
-                width: 100%;
-            }
+            .select-options { position: static; margin-top: 5px; box-shadow: none; border: 1px solid var(--border-color); width: 100%; }
         }
 
         /* Header */
         .app-title {
             text-align: center; margin: 0 0 25px 0; font-size: 1.8em; font-weight: 700;
             background: var(--accent-gradient); -webkit-background-clip: text; background-clip: text;
-            color: transparent; text-shadow: 0px 2px 4px rgba(0,0,0,0.05); letter-spacing: -0.02em; 
-            margin-top: 0; 
+            color: transparent; text-shadow: 0px 2px 4px rgba(0,0,0,0.05); letter-spacing: -0.02em; margin-top: 0; 
         }
         [data-theme="dark"] .app-title { text-shadow: none; }
 
@@ -225,7 +163,6 @@
         .fraction-row { display: flex; align-items: center; gap: 10px; animation: fadeIn 0.3s ease-out; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(-5px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* Row Index */
         .row-index {
             font-family: SF Mono, monospace; font-size: 1em; color: var(--accent-color);
             font-weight: 700; width: 30px; text-align: center; flex-shrink: 0; opacity: 0.8;
@@ -273,7 +210,9 @@
         .btn-secondary { background: var(--bg-primary); color: var(--text-primary); border: 1px solid var(--border-color); }
         .btn-secondary:hover { background: var(--border-color); }
 
-        /* Result Area */
+        /* ========================================================== */
+        /* Result Area & Stacked Fraction Styles (New Feature)        */
+        /* ========================================================== */
         #result-area {
             margin-top: 30px; padding: 30px; border-radius: var(--radius-default);
             background: var(--glass-bg); backdrop-filter: var(--glass-blur);
@@ -281,14 +220,55 @@
             text-align: center; transition: all 0.3s; display: none; position: relative;
         }
         .result-label { font-size: 0.9em; text-transform: uppercase; letter-spacing: 1.2px; color: var(--text-secondary); margin-bottom: 15px; }
-        .result-value-container { width: 100%; overflow-x: auto; padding-bottom: 10px; }
-        .result-value {
-            font-size: 3em; font-weight: 800; background: var(--accent-gradient);
-            -webkit-background-clip: text; background-clip: text; color: transparent;
-            line-height: 1.2; white-space: nowrap; display: inline-block; min-width: 100%;
-            text-shadow: 0px 2px 4px rgba(0,0,0,0.1); font-variant-numeric: tabular-nums;
+        
+        .result-value-container { 
+            width: 100%; 
+            overflow-x: auto; 
+            padding-bottom: 10px; 
+            /* Flexbox 用於居中直式分數 */
+            display: flex;
+            justify-content: center;
         }
-        [data-theme="dark"] .result-value { text-shadow: 0px 2px 10px rgba(208, 188, 255, 0.3); }
+        
+        .result-value {
+            font-size: 3em; 
+            font-weight: 800; 
+            color: var(--accent-color); /* Fallback color */
+            line-height: 1.2; 
+            white-space: nowrap; 
+            display: inline-block; 
+            font-variant-numeric: tabular-nums;
+        }
+
+        /* 漸層文字僅在橫式時使用 (直式因為有 Border 較難處理漸層) */
+        .result-value:not(.stacked) {
+            background: var(--accent-gradient);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        /* 直式分數樣式 */
+        .fraction-stack {
+            display: inline-flex;
+            flex-direction: column;
+            align-items: center;
+            vertical-align: middle;
+            margin: 0 5px;
+        }
+        
+        .fraction-stack .numerator {
+            border-bottom: 3px solid currentColor; /* 橫線 */
+            padding-bottom: 2px;
+            text-align: center;
+            width: 100%; /* 確保線條與最寬數字等寬 */
+        }
+        
+        .fraction-stack .denominator {
+            padding-top: 2px;
+            text-align: center;
+        }
+
         .result-expression { font-size: 1em; color: var(--text-secondary); margin-top: 15px; font-family: SF Mono, monospace; word-break: break-all; }
 
         .copy-actions { display: flex; justify-content: center; gap: 10px; margin-top: 20px; flex-wrap: wrap; }
@@ -340,7 +320,6 @@
             </button>
 
             <div class="controls-group" id="controls-group">
-                
                 <div class="custom-select" id="lang-select">
                     <button class="select-trigger" id="lang-trigger">
                         <div class="trigger-content">
@@ -357,7 +336,6 @@
                         <div class="option" data-value="zh-CN">简体中文</div>
                     </div>
                 </div>
-
                 <div class="custom-select" id="theme-select" style="min-width: 140px;">
                     <button class="select-trigger" id="theme-trigger">
                         <div class="trigger-content">
@@ -381,7 +359,6 @@
                         </div>
                     </div>
                 </div>
-
             </div>
         </div>
 
@@ -418,7 +395,7 @@
 
         <div id="result-area">
             <div class="result-label" data-i18n="result_label">最終結果</div>
-            <div class="result-value-container">
+            <div class="result-value-container" id="result-container">
                 <div class="result-value" id="final-result" data-num="" data-den="">--</div>
             </div>
             
@@ -458,28 +435,23 @@
 
     <script>
         // ============================================
-        // 0. Language & Theme Setup (OS Detection + Mobile Menu + Favicon)
+        // 0. Language & Theme Setup
         // ============================================
         
         // 1. Favicon Logic
         const faviconLink = document.getElementById('dynamic-favicon');
-        // Purple Icon (Light Mode)
         const svgLight = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%236200ee'%3E%3Cpath d='M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V5h14v14zm-7-2h2v-2h-2v2zm-4 0h2v-2H8v2zm0-4h2v-2H8v2zm4 0h2v-2h-2v2zm4 4h2v-2h-2v2zm0-4h2v-2h-2v2z'/%3E%3C/svg%3E";
-        // White Icon (Dark Mode)
         const svgDark = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23ffffff'%3E%3Cpath d='M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V5h14v14zm-7-2h2v-2h-2v2zm-4 0h2v-2H8v2zm0-4h2v-2H8v2zm4 0h2v-2h-2v2zm4 4h2v-2h-2v2zm0-4h2v-2h-2v2z'/%3E%3C/svg%3E";
 
         function updateFavicon() {
-            // Check system preference regardless of website theme toggle
             if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
                 faviconLink.href = svgDark;
             } else {
                 faviconLink.href = svgLight;
             }
         }
-        
-        // Listen to system theme changes for favicon
         window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', updateFavicon);
-        updateFavicon(); // Init
+        updateFavicon();
 
         // 2. Mobile Menu
         const mobileSettingsBtn = document.getElementById('mobile-settings-toggle');
@@ -852,13 +824,43 @@
 
             resultArea.style.display = 'block';
             calcProcess.textContent = expressionString + " = ";
+            
+            // Set attributes for copy function
             resultVal.setAttribute('data-num', current.n);
             resultVal.setAttribute('data-den', current.d);
 
-            if (current.d === 1) resultVal.textContent = current.n;
-            else resultVal.textContent = `${current.n}/${current.d}`;
+            // Update Display (Switch to Stacked if needed)
+            updateResultDisplay(current.n, current.d);
 
             generateEducationalDetails(fractions);
+        }
+
+        // New function to handle Stacked vs Linear display
+        function updateResultDisplay(num, den) {
+            const resultVal = document.getElementById('final-result');
+            const container = document.getElementById('result-container');
+            
+            // Reset to linear first to check width
+            resultVal.classList.remove('stacked');
+            if (den === 1) {
+                resultVal.textContent = num;
+            } else {
+                resultVal.innerHTML = `${num} / ${den}`;
+            }
+
+            // Check overflow
+            // We use a small buffer (e.g. 5px) to be safe
+            if (resultVal.scrollWidth > container.clientWidth) {
+                if (den !== 1) {
+                    resultVal.classList.add('stacked');
+                    resultVal.innerHTML = `
+                        <div class="fraction-stack">
+                            <span class="numerator">${num}</span>
+                            <span class="denominator">${den}</span>
+                        </div>
+                    `;
+                }
+            }
         }
 
         function generateEducationalDetails(fractions) {
@@ -898,9 +900,15 @@
             const den = resultEl.getAttribute('data-den');
             let textToCopy = "";
             if (!num) return;
-            if (type === 'all') textToCopy = resultEl.textContent;
+            
+            if (type === 'all') {
+                // Always copy linear format "num/den" even if displayed stacked
+                if (den === "1" || den == 1) textToCopy = num;
+                else textToCopy = `${num}/${den}`;
+            }
             else if (type === 'num') textToCopy = num;
             else if (type === 'den') textToCopy = den || "1";
+            
             if (navigator.clipboard && navigator.clipboard.writeText) { navigator.clipboard.writeText(textToCopy).then(showToast); }
             else { const ta = document.createElement('textarea'); ta.value = textToCopy; document.body.appendChild(ta); ta.select(); document.execCommand('copy'); document.body.removeChild(ta); showToast(); }
         }
