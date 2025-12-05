@@ -27,6 +27,7 @@
             --border-color: #e0e2e8;
             --radius-default: 16px;
             --radius-pill: 50px;
+            --radius-input: 12px;
             
             --shadow-sm: 0 1px 2px rgba(0,0,0,0.05);
             --shadow-md: 0 4px 12px rgba(0,0,0,0.08);
@@ -84,53 +85,19 @@
             .container { max-width: none; width: 67vw; }
         }
 
-        /* ========================================================== */
-        /* Header Section (Controls + Title)                          */
-        /* ========================================================== */
-        .app-header {
-            display: flex;
-            flex-direction: column;
-            width: 100%;
-            margin-bottom: 25px;
-        }
-
-        .top-controls-wrapper {
-            display: flex;
-            justify-content: flex-end;
-            width: 100%;
-            position: relative; 
-            margin-bottom: 10px; 
-            z-index: 100;
-        }
-
+        /* Header */
+        .app-header { display: flex; flex-direction: column; width: 100%; margin-bottom: 25px; }
+        .top-controls-wrapper { display: flex; justify-content: flex-end; width: 100%; position: relative; margin-bottom: 10px; z-index: 100; }
         .mobile-settings-btn {
-            width: 44px;
-            height: 44px;
-            border-radius: 50%;
-            background: var(--bg-card);
-            border: 1px solid var(--border-color);
-            color: var(--text-primary);
-            display: none; 
-            justify-content: center;
-            align-items: center;
-            cursor: pointer;
-            box-shadow: var(--shadow-sm);
-            transition: all 0.2s;
+            width: 44px; height: 44px; border-radius: 50%; background: var(--bg-card);
+            border: 1px solid var(--border-color); color: var(--text-primary); display: none; 
+            justify-content: center; align-items: center; cursor: pointer;
+            box-shadow: var(--shadow-sm); transition: all 0.2s;
         }
-
         .mobile-settings-btn:hover, .mobile-settings-btn.active {
-            background: var(--bg-primary);
-            color: var(--accent-color);
-            border-color: var(--accent-color);
+            background: var(--bg-primary); color: var(--accent-color); border-color: var(--accent-color);
         }
-
-        .controls-group {
-            display: flex;
-            gap: 12px;
-            align-items: center;
-        }
-
-        /* General Custom Select Styles */
+        .controls-group { display: flex; gap: 12px; align-items: center; }
         .custom-select { position: relative; font-size: 0.9em; min-width: 140px; }
         .select-trigger {
             display: flex; justify-content: space-between; align-items: center; padding: 0 14px; height: 40px;
@@ -139,7 +106,6 @@
         }
         .select-trigger:hover { border-color: var(--accent-color); }
         .trigger-content { display: flex; align-items: center; gap: 8px; }
-        
         .select-options {
             position: absolute; top: 48px; right: 0; width: 100%; min-width: 150px;
             background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 12px;
@@ -147,7 +113,6 @@
         }
         @keyframes slideDown { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
         .select-options.open { display: block; }
-        
         .option {
             padding: 10px 16px; cursor: pointer; transition: background 0.2s; color: var(--text-primary);
             display: flex; align-items: center; gap: 10px;
@@ -155,53 +120,26 @@
         .option:hover { background: var(--bg-primary); color: var(--accent-color); }
         .option.selected { background: var(--accent-bg-subtle); font-weight: bold; color: var(--accent-color); }
 
-        /* Title */
         .app-title {
-            text-align: center; 
-            margin: 0; 
-            font-size: 1.8em; 
-            font-weight: 700;
+            text-align: center; margin: 0; font-size: 1.8em; font-weight: 700;
             background: var(--accent-gradient); -webkit-background-clip: text; background-clip: text;
             color: transparent; text-shadow: 0px 2px 4px rgba(0,0,0,0.05); letter-spacing: -0.02em; 
         }
         [data-theme="dark"] .app-title { text-shadow: none; }
 
-        /* ========================================================== */
-        /* Responsive Logic for Controls & Layout                     */
-        /* ========================================================== */
         @media (max-width: 768px) {
             body { padding: 20px 15px; }
             .container { padding: 25px 20px; width: 100%; }
-            
             .mobile-settings-btn { display: flex; }
-
             .controls-group {
-                display: none;
-                position: absolute;
-                top: 55px;
-                right: 0;
-                background: var(--bg-card);
-                border: 1px solid var(--border-color);
-                padding: 15px;
-                border-radius: 16px;
-                box-shadow: var(--shadow-md);
-                flex-direction: column;
-                width: 200px;
-                animation: slideDown 0.2s ease;
-                z-index: 200; 
+                display: none; position: absolute; top: 55px; right: 0;
+                background: var(--bg-card); border: 1px solid var(--border-color);
+                padding: 15px; border-radius: 16px; box-shadow: var(--shadow-md);
+                flex-direction: column; width: 200px; animation: slideDown 0.2s ease; z-index: 200; 
             }
-
             .controls-group.show { display: flex; }
-
             .custom-select { width: 100%; min-width: unset; }
-            
-            .select-options {
-                position: static;
-                margin-top: 5px;
-                box-shadow: none;
-                border: 1px solid var(--border-color);
-                width: 100%;
-            }
+            .select-options { position: static; margin-top: 5px; box-shadow: none; border: 1px solid var(--border-color); width: 100%; }
         }
 
         /* Mode Switcher */
@@ -227,71 +165,106 @@
 
         /* Fraction Inputs */
         .fraction-list { display: flex; flex-direction: column; gap: 12px; margin-bottom: 20px; }
-        .fraction-row { display: flex; align-items: center; gap: 10px; animation: fadeIn 0.3s ease-out; }
+        
+        /* v34 新增: .z-elevated 用於提升當前操作列的層級 */
+        .fraction-row { 
+            display: flex; align-items: center; gap: 10px; animation: fadeIn 0.3s ease-out; 
+            transition: transform 0.2s, box-shadow 0.2s;
+            background: var(--bg-card);
+            border-radius: 12px;
+            position: relative; /* 關鍵：建立定位環境 */
+            z-index: 1; /* 預設層級 */
+        }
+        
+        .fraction-row.z-elevated {
+            z-index: 1000; /* 確保選單展開時在最上層 */
+        }
+
+        .fraction-row.dragging {
+            opacity: 0.5;
+            box-shadow: var(--shadow-float);
+            z-index: 2000; /* 拖曳時最高 */
+        }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(-5px); } to { opacity: 1; transform: translateY(0); } }
+
+        .drag-handle {
+            display: none; cursor: grab; color: var(--text-secondary); padding: 5px; touch-action: none;
+        }
+        .drag-handle:active { cursor: grabbing; }
+        body.edit-mode .drag-handle { display: flex; }
+        body.edit-mode .row-index { display: none; } 
 
         .row-index {
             font-family: SF Mono, monospace; font-size: 1em; color: var(--accent-color);
             font-weight: 700; width: 30px; text-align: center; flex-shrink: 0; opacity: 0.8;
         }
 
-        /* Operator Select Custom Styling (Matches Header Selects) */
+        /* Operator Select Custom Styling (Optimized v34) */
         .operator-container { 
-            width: 70px; /* Slightly wider for the custom select */
-            display: flex; justify-content: center; align-items: center; flex-shrink: 0; 
-            visibility: visible; 
-            /* Ensure z-index allows dropdown to show over input */
+            width: 70px; display: flex; justify-content: center; align-items: center; flex-shrink: 0; visibility: visible; 
+            position: relative; 
             z-index: 5; 
         }
         
-        .operator-select-wrapper {
-            width: 100%;
-            min-width: unset; /* Override default custom-select min-width */
-        }
-
-        .operator-select-wrapper .select-trigger {
-            padding: 0 8px; /* Tighter padding */
-            justify-content: center;
+        .operator-select-wrapper { width: 100%; min-width: unset; }
+        
+        .operator-select-wrapper .select-trigger { 
+            padding: 0 8px; 
+            justify-content: center; 
             gap: 4px;
-        }
-
-        .operator-select-wrapper .select-trigger span:first-child {
-            font-size: 1.2em;
-            font-weight: bold;
-        }
-
-        .operator-select-wrapper .select-options {
-            min-width: 100%; /* Dropdown width matches trigger */
-            width: 120px; /* Or slightly wider for better touch targets */
-            left: 50%;
-            transform: translateX(-50%);
-            top: 45px;
-            text-align: center;
+            border-radius: var(--radius-input);
         }
         
-        /* Dropdown Animation override for centered transform */
+        .operator-select-wrapper .select-trigger span:first-child { font-size: 1.2em; font-weight: bold; }
+        
+        /* 選單樣式與動畫 */
+        .operator-select-wrapper .select-options {
+            position: absolute;
+            min-width: 100%; 
+            width: 120px; 
+            left: 50%; 
+            transform: translateX(-50%); 
+            text-align: center;
+            z-index: 100; 
+            /* 預設不指定 top/bottom，由 JS 控制 */
+        }
+        
+        /* 向下展開 */
+        .operator-select-wrapper .select-options.opens-down {
+            top: calc(100% + 4px);
+            bottom: auto;
+            transform-origin: top center;
+            animation: slideDownCenter 0.2s ease;
+        }
+        
+        /* 向上展開 (v34 Feature) */
+        .operator-select-wrapper .select-options.opens-up {
+            bottom: calc(100% + 4px);
+            top: auto;
+            transform-origin: bottom center;
+            animation: slideUpCenter 0.2s ease;
+        }
+        
         @keyframes slideDownCenter { 
             from { opacity: 0; transform: translateX(-50%) translateY(-10px); } 
             to { opacity: 1; transform: translateX(-50%) translateY(0); } 
         }
-        .operator-select-wrapper .select-options { animation: slideDownCenter 0.2s ease; }
-
-        .operator-select-wrapper .option {
-            justify-content: center;
-            font-size: 1.2em;
-            font-weight: bold;
+        
+        @keyframes slideUpCenter { 
+            from { opacity: 0; transform: translateX(-50%) translateY(10px); } 
+            to { opacity: 1; transform: translateX(-50%) translateY(0); } 
         }
 
+        .operator-select-wrapper .option { justify-content: center; font-size: 1.2em; font-weight: bold; }
+        
         .fixed-plus { display: none; font-size: 1.5em; color: var(--text-secondary); font-weight: bold; text-align: center; width: 100%; }
         
-        /* Mode handling */
         body[data-mode="sum"] .operator-select-wrapper { display: none; }
         body[data-mode="sum"] .fixed-plus { display: block; }
         
         .fraction-input-wrapper {
             flex: 1; display: flex; align-items: center; background: var(--bg-primary);
-            border: 1px solid transparent; border-radius: 12px; padding: 4px; transition: all 0.2s;
-            z-index: 1; /* Below operator dropdown */
+            border: 1px solid transparent; border-radius: var(--radius-input); padding: 4px; transition: all 0.2s; z-index: 1;
         }
         .fraction-input-wrapper:focus-within { background: var(--bg-card); border-color: var(--accent-color); box-shadow: 0 0 0 2px var(--accent-light); }
         .num-input {
@@ -310,6 +283,15 @@
         
         .delete-btn { display: flex; } 
 
+        .edit-toggle-wrapper { display: flex; justify-content: flex-end; margin-bottom: 10px; }
+        .edit-toggle-btn {
+            background: none; border: none; color: var(--accent-color); font-weight: bold;
+            cursor: pointer; display: flex; align-items: center; gap: 5px; font-size: 0.9em;
+            padding: 5px 10px; border-radius: 8px; transition: background 0.2s;
+        }
+        .edit-toggle-btn:hover { background: var(--accent-bg-subtle); }
+        .edit-toggle-btn.active { background: var(--accent-color); color: white; }
+
         .btn-group { display: flex; flex-wrap: wrap; gap: 15px; margin-top: 25px; }
         .btn {
             padding: 14px 24px; border-radius: 12px; border: none; font-size: 1em; font-weight: 600;
@@ -321,9 +303,6 @@
         .btn-secondary { background: var(--bg-primary); color: var(--text-primary); border: 1px solid var(--border-color); }
         .btn-secondary:hover { background: var(--border-color); }
 
-        /* ========================================================== */
-        /* Result Area & Stacked Fraction Styles                      */
-        /* ========================================================== */
         #result-area {
             margin-top: 30px; padding: 30px; border-radius: var(--radius-default);
             background: var(--glass-bg); backdrop-filter: var(--glass-blur);
@@ -331,68 +310,24 @@
             text-align: center; transition: all 0.3s; display: none; position: relative;
         }
         .result-label { font-size: 0.9em; text-transform: uppercase; letter-spacing: 1.2px; color: var(--text-secondary); margin-bottom: 15px; }
-        
-        .result-value-container { 
-            width: 100%; overflow-x: auto; padding-bottom: 10px; 
-            display: flex; justify-content: center;
-        }
-        
+        .result-value-container { width: 100%; overflow-x: auto; padding-bottom: 10px; display: flex; justify-content: center; }
         .result-value {
-            font-size: 3em; 
-            font-weight: 800; 
-            line-height: 1.2; 
-            white-space: nowrap; 
-            display: inline-block; 
-            font-variant-numeric: tabular-nums;
+            font-size: 3em; font-weight: 800; line-height: 1.2; white-space: nowrap; display: inline-block; font-variant-numeric: tabular-nums;
         }
-
-        .result-value:not(.stacked) {
-            background: var(--accent-gradient);
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
+        .result-value:not(.stacked) { background: var(--accent-gradient); -webkit-background-clip: text; background-clip: text; color: transparent; }
+        .fraction-stack { display: inline-flex; flex-direction: column; align-items: center; vertical-align: middle; margin: 0 5px; }
+        .fraction-stack .numerator, .fraction-stack .denominator {
+            background: var(--accent-gradient); -webkit-background-clip: text; background-clip: text; color: transparent; width: fit-content; display: block;
         }
-
-        .fraction-stack {
-            display: inline-flex;
-            flex-direction: column;
-            align-items: center;
-            vertical-align: middle;
-            margin: 0 5px;
-        }
-        
-        .fraction-stack .numerator,
-        .fraction-stack .denominator {
-            background: var(--accent-gradient);
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-            width: fit-content;
-            display: block;
-        }
-        
-        .fraction-stack .numerator {
-            border-bottom: 3px solid transparent; 
-            border-image: var(--accent-gradient);
-            border-image-slice: 1; 
-            width: 100%;
-            padding-bottom: 2px;
-            text-align: center;
-        }
-        
-        .fraction-stack .denominator {
-            padding-top: 2px;
-            text-align: center;
-        }
-
+        .fraction-stack .numerator { border-bottom: 3px solid transparent; border-image: var(--accent-gradient); border-image-slice: 1; width: 100%; padding-bottom: 2px; text-align: center; }
+        .fraction-stack .denominator { padding-top: 2px; text-align: center; }
         .result-expression { font-size: 1em; color: var(--text-secondary); margin-top: 15px; font-family: SF Mono, monospace; word-break: break-all; }
 
         .copy-actions { display: flex; justify-content: center; gap: 10px; margin-top: 20px; flex-wrap: wrap; }
         .copy-btn {
             padding: 8px 12px; font-size: 0.85em; border-radius: 8px; border: 1px solid var(--border-color);
             background: var(--bg-card); color: var(--text-secondary); cursor: pointer; display: flex;
-            align-items: center; gap: 5px; transition: all 0.2s; font-family: inherit;
-            white-space: nowrap; 
+            align-items: center; gap: 5px; transition: all 0.2s; font-family: inherit; white-space: nowrap; 
         }
         .copy-btn:hover { background: var(--bg-primary); color: var(--accent-color); border-color: var(--accent-color); }
         .copy-btn:active { transform: scale(0.95); }
@@ -405,7 +340,6 @@
         }
         .show-toast { opacity: 1 !important; }
 
-        /* Steps */
         #educational-steps {
             margin-top: 40px; text-align: left; display: grid;
             grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
@@ -424,15 +358,8 @@
             .btn-group { flex-direction: column; }
             .result-value { font-size: 2.2em; }
             #educational-steps { grid-template-columns: 1fr; }
-            
-            .copy-actions {
-                flex-direction: column;
-                width: 100%;
-            }
-            .copy-btn {
-                width: 100%;
-                justify-content: center;
-            }
+            .copy-actions { flex-direction: column; width: 100%; }
+            .copy-btn { width: 100%; justify-content: center; }
         }
     </style>
 </head>
@@ -445,7 +372,6 @@
                 <button class="mobile-settings-btn" id="mobile-settings-toggle" aria-label="Settings">
                     <span class="material-symbols-rounded">settings</span>
                 </button>
-
                 <div class="controls-group" id="controls-group">
                     <div class="custom-select" id="lang-select">
                         <button class="select-trigger" id="lang-trigger">
@@ -473,42 +399,39 @@
                         </button>
                         <div class="select-options" id="theme-options">
                             <div class="option selected" data-value="system">
-                                <span class="material-symbols-rounded">auto_mode</span>
-                                <span data-i18n="theme_system">跟隨系統</span>
+                                <span class="material-symbols-rounded">auto_mode</span> <span data-i18n="theme_system">跟隨系統</span>
                             </div>
                             <div class="option" data-value="light">
-                                <span class="material-symbols-rounded">light_mode</span>
-                                <span data-i18n="theme_light">淺色</span>
+                                <span class="material-symbols-rounded">light_mode</span> <span data-i18n="theme_light">淺色</span>
                             </div>
                             <div class="option" data-value="dark">
-                                <span class="material-symbols-rounded">dark_mode</span>
-                                <span data-i18n="theme_dark">深色</span>
+                                <span class="material-symbols-rounded">dark_mode</span> <span data-i18n="theme_dark">深色</span>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-
             <h1 class="app-title" data-i18n="title">分數運算工具</h1>
         </header>
 
         <div class="mode-switcher">
             <input type="radio" name="mode" id="mode-sum" class="mode-input" value="sum" checked onchange="setMode('sum')">
             <input type="radio" name="mode" id="mode-calc" class="mode-input" value="calc" onchange="setMode('calc')">
-            
             <div class="mode-bg"></div>
-            
-            <label for="mode-sum" class="mode-label">
-                <span class="material-symbols-rounded">add_circle</span> <span data-i18n="mode_sum">加總模式</span>
-            </label>
-            <label for="mode-calc" class="mode-label">
-                <span class="material-symbols-rounded">calculate</span> <span data-i18n="mode_calc">運算模式</span>
-            </label>
+            <label for="mode-sum" class="mode-label"><span class="material-symbols-rounded">add_circle</span> <span data-i18n="mode_sum">加總模式</span></label>
+            <label for="mode-calc" class="mode-label"><span class="material-symbols-rounded">calculate</span> <span data-i18n="mode_calc">運算模式</span></label>
+        </div>
+
+        <div class="edit-toggle-wrapper">
+            <button id="edit-mode-btn" class="edit-toggle-btn" onclick="toggleEditMode()">
+                <span class="material-symbols-rounded">sort</span>
+                <span data-i18n="btn_sort">編輯排序</span>
+            </button>
         </div>
 
         <div class="fraction-list" id="fraction-list"></div>
 
-        <button class="btn btn-secondary" onclick="addFraction()" style="width:100%; border-style:dashed; opacity:0.8;">
+        <button class="btn btn-secondary" onclick="addFraction()">
             <span class="material-symbols-rounded">add</span> <span data-i18n="add_btn">新增分數</span>
         </button>
 
@@ -528,70 +451,73 @@
             </div>
             
             <div class="copy-actions">
-                <button class="copy-btn" onclick="copyResult('all')">
-                    <span class="material-symbols-rounded" style="font-size:16px">content_copy</span>
-                    <span data-i18n="btn_copy_all">複製結果</span>
-                </button>
-                <button class="copy-btn" onclick="copyResult('num')">
-                    <span class="material-symbols-rounded" style="font-size:16px">north</span>
-                    <span data-i18n="btn_copy_num">僅分子</span>
-                </button>
-                <button class="copy-btn" onclick="copyResult('den')">
-                    <span class="material-symbols-rounded" style="font-size:16px">south</span>
-                    <span data-i18n="btn_copy_den">僅分母</span>
-                </button>
+                <button class="copy-btn" onclick="copyResult('all')"><span class="material-symbols-rounded" style="font-size:16px">content_copy</span><span data-i18n="btn_copy_all">複製結果</span></button>
+                <button class="copy-btn" onclick="copyResult('num')"><span class="material-symbols-rounded" style="font-size:16px">north</span><span data-i18n="btn_copy_num">僅分子</span></button>
+                <button class="copy-btn" onclick="copyResult('den')"><span class="material-symbols-rounded" style="font-size:16px">south</span><span data-i18n="btn_copy_den">僅分母</span></button>
             </div>
 
             <div class="result-expression" id="calc-process">--</div>
             
             <div id="educational-steps">
-                <div class="step-card">
-                    <div class="step-title"><span class="material-symbols-rounded">content_cut</span> <span data-i18n="step_simplify">個別約分</span></div>
-                    <div class="step-content" id="step-simplify"></div>
-                </div>
-                <div class="step-card">
-                    <div class="step-title"><span class="material-symbols-rounded">join_inner</span> <span data-i18n="step_common">通分過程</span></div>
-                    <div class="step-content" id="step-common"></div>
-                </div>
-                <div class="step-card">
-                    <div class="step-title"><span class="material-symbols-rounded">open_in_full</span> <span data-i18n="step_expand">擴分範例</span></div>
-                    <div class="step-content" id="step-expand"></div>
-                </div>
+                <div class="step-card"><div class="step-title"><span class="material-symbols-rounded">content_cut</span> <span data-i18n="step_simplify">個別約分</span></div><div class="step-content" id="step-simplify"></div></div>
+                <div class="step-card"><div class="step-title"><span class="material-symbols-rounded">join_inner</span> <span data-i18n="step_common">通分過程</span></div><div class="step-content" id="step-common"></div></div>
+                <div class="step-card"><div class="step-title"><span class="material-symbols-rounded">open_in_full</span> <span data-i18n="step_expand">擴分範例</span></div><div class="step-content" id="step-expand"></div></div>
             </div>
         </div>
     </div>
 
     <script>
-        // ============================================
-        // 0. Language & Theme Setup
-        // ============================================
-        
-        // 1. Favicon Logic
         const faviconLink = document.getElementById('dynamic-favicon');
         const svgLight = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%236200ee'%3E%3Cpath d='M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V5h14v14zm-7-2h2v-2h-2v2zm-4 0h2v-2H8v2zm0-4h2v-2H8v2zm4 0h2v-2h-2v2zm4 4h2v-2h-2v2zm0-4h2v-2h-2v2z'/%3E%3C/svg%3E";
         const svgDark = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23ffffff'%3E%3Cpath d='M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V5h14v14zm-7-2h2v-2h-2v2zm-4 0h2v-2H8v2zm0-4h2v-2H8v2zm4 0h2v-2h-2v2zm4 4h2v-2h-2v2zm0-4h2v-2h-2v2z'/%3E%3C/svg%3E";
 
         function updateFavicon() {
-            if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
-                faviconLink.href = svgDark;
-            } else {
-                faviconLink.href = svgLight;
-            }
+            if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) faviconLink.href = svgDark;
+            else faviconLink.href = svgLight;
         }
         window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', updateFavicon);
         updateFavicon();
 
-        // 2. Mobile Menu & Dropdowns
         const mobileSettingsBtn = document.getElementById('mobile-settings-toggle');
         const controlsGroup = document.getElementById('controls-group');
-
         mobileSettingsBtn.addEventListener('click', (e) => {
             e.stopPropagation();
             mobileSettingsBtn.classList.toggle('active');
             controlsGroup.classList.toggle('show');
         });
+        document.addEventListener('click', (e) => {
+            if (!controlsGroup.contains(e.target) && e.target !== mobileSettingsBtn && !mobileSettingsBtn.contains(e.target)) {
+                controlsGroup.classList.remove('show');
+                mobileSettingsBtn.classList.remove('active');
+            }
+            document.querySelectorAll('.select-options.open').forEach(el => el.classList.remove('open'));
+            
+            // Reset elevated z-index rows
+            document.querySelectorAll('.fraction-row.z-elevated').forEach(el => el.classList.remove('z-elevated'));
+        });
 
-        // Setup dropdown logic
+        function detectSystemLanguage() {
+            const userLang = navigator.language || navigator.userLanguage; 
+            const langCode = userLang.toLowerCase();
+            if (langCode.startsWith('zh')) {
+                if (langCode.includes('cn') || langCode.includes('sg') || langCode.includes('hans')) return 'zh-CN';
+                return 'zh-TW'; 
+            }
+            if (langCode.startsWith('ja')) return 'ja';
+            if (langCode.startsWith('ko')) return 'ko';
+            if (langCode.startsWith('en')) return 'en';
+            return 'zh-TW'; 
+        }
+        let currentLang = detectSystemLanguage();
+
+        const translations = {
+            'zh-TW': { title: "分數運算工具", mode_sum: "加總模式", mode_calc: "運算模式", add_btn: "新增分數", calc_btn: "開始計算", reset_btn: "重置", result_label: "最終結果", step_simplify: "個別約分 (Simplification)", step_common: "通分過程 (Common Denominator)", step_expand: "擴分範例 (Expansion)", placeholder_num: "分子", placeholder_den: "分母", alert_fill: "請填寫所有欄位", alert_zero: "分母不能為 0", alert_min_rows: "至少需要保留兩組分數", text_gcd: "使用公約數", text_simplify_done: "目前的輸入分數已是最簡分數，無需約分。", text_lcm: "最小公倍數 (分母)", text_expand_factor: "擴分倍數", btn_copy_all: "複製結果", btn_copy_num: "僅分子", btn_copy_den: "僅分母", msg_copied: "已複製！", theme_system: "跟隨系統", theme_light: "淺色", theme_dark: "深色", btn_sort: "編輯排序", btn_done: "完成" },
+            'en': { title: "Fraction Calculator", mode_sum: "Sum Mode", mode_calc: "Calc Mode", add_btn: "Add Fraction", calc_btn: "Calculate", reset_btn: "Reset", result_label: "Final Result", step_simplify: "Simplification", step_common: "Common Denominator", step_expand: "Expansion Example", placeholder_num: "Num", placeholder_den: "Denom", alert_fill: "Please fill in all fields", alert_zero: "Denominator cannot be 0", alert_min_rows: "At least two fractions required", text_gcd: "GCD", text_simplify_done: "Fractions are already simplified.", text_lcm: "LCM (Denominator)", text_expand_factor: "Factor", btn_copy_all: "Copy Result", btn_copy_num: "Numerator", btn_copy_den: "Denominator", msg_copied: "Copied!", theme_system: "System", theme_light: "Light", theme_dark: "Dark", btn_sort: "Edit Order", btn_done: "Done" },
+            'ja': { title: "分数計算ツール", mode_sum: "合計モード", mode_calc: "計算モード", add_btn: "分数を追加", calc_btn: "計算する", reset_btn: "リセット", result_label: "計算結果", step_simplify: "約分 (Simplification)", step_common: "通分 (Common Denominator)", step_expand: "拡分 (Expansion)", placeholder_num: "分子", placeholder_den: "分母", alert_fill: "すべての項目を入力してください", alert_zero: "分母は0にできません", alert_min_rows: "少なくとも2つの分数が必要です", text_gcd: "最大公約数", text_simplify_done: "既約分数です。約分は不要です。", text_lcm: "最小公倍数 (分母)", text_expand_factor: "拡分倍率", btn_copy_all: "結果をコピー", btn_copy_num: "分子のみ", btn_copy_den: "分母のみ", msg_copied: "コピーしました！", theme_system: "システム", theme_light: "ライト", theme_dark: "ダーク", btn_sort: "並べ替え編集", btn_done: "完了" },
+            'ko': { title: "분수 계산기", mode_sum: "합계 모드", mode_calc: "계산 모드", add_btn: "분수 추가", calc_btn: "계산하기", reset_btn: "초기화", result_label: "최종 결과", step_simplify: "개별 약분 (Simplification)", step_common: "통분 과정 (Common Denominator)", step_expand: "확분 예시 (Expansion)", placeholder_num: "분자", placeholder_den: "분모", alert_fill: "모든 필드를 입력해 주세요", alert_zero: "분모는 0이 될 수 없습니다", alert_min_rows: "최소 두 개의 분수가 필요합니다", text_gcd: "최대공약수", text_simplify_done: "이미 기약분수 상태입니다.", text_lcm: "최소공배수 (분모)", text_expand_factor: "배수", btn_copy_all: "결과 복사", btn_copy_num: "분자만", btn_copy_den: "분모만", msg_copied: "복사되었습니다!", theme_system: "시스템", theme_light: "라이트", theme_dark: "다크", btn_sort: "순서 편집", btn_done: "완료" },
+            'zh-CN': { title: "分数运算工具", mode_sum: "加总模式", mode_calc: "运算模式", add_btn: "新增分数", calc_btn: "开始计算", reset_btn: "重置", result_label: "最终结果", step_simplify: "个别约分 (Simplification)", step_common: "通分过程 (Common Denominator)", step_expand: "扩分范例 (Expansion)", placeholder_num: "分子", placeholder_den: "分母", alert_fill: "请填写所有字段", alert_zero: "分母不能为 0", alert_min_rows: "至少需要保留两组分数", text_gcd: "使用公约数", text_simplify_done: "目前的输入分数已是最简分数，无需约分。", text_lcm: "最小公倍数 (分母)", text_expand_factor: "扩分倍数", btn_copy_all: "复制结果", btn_copy_num: "仅分子", btn_copy_den: "仅分母", msg_copied: "已复制！", theme_system: "跟随系统", theme_light: "浅色", theme_dark: "深色", btn_sort: "编辑排序", btn_done: "完成" }
+        };
+
         function setupDropdown(idPrefix, onSelectCallback) {
             const container = document.getElementById(`${idPrefix}-select`);
             const trigger = document.getElementById(`${idPrefix}-trigger`);
@@ -608,111 +534,14 @@
                     options.querySelectorAll('.option').forEach(opt => opt.classList.remove('selected'));
                     option.classList.add('selected');
                     options.classList.remove('open');
-                    
-                    // Auto-collapse mobile menu on selection
                     if (controlsGroup.classList.contains('show')) {
                         controlsGroup.classList.remove('show');
                         mobileSettingsBtn.classList.remove('active');
                     }
-
                     onSelectCallback(value, option);
                 });
             });
-            document.addEventListener('click', (e) => { if (!container.contains(e.target)) options.classList.remove('open'); });
         }
-
-        // Global click listener to close everything
-        document.addEventListener('click', (e) => {
-            if (!controlsGroup.contains(e.target) && e.target !== mobileSettingsBtn && !mobileSettingsBtn.contains(e.target)) {
-                controlsGroup.classList.remove('show');
-                mobileSettingsBtn.classList.remove('active');
-            }
-            // Also close all dropdowns
-            document.querySelectorAll('.select-options.open').forEach(el => el.classList.remove('open'));
-        });
-
-        // 3. Auto-Detect Language
-        function detectSystemLanguage() {
-            const userLang = navigator.language || navigator.userLanguage; 
-            const langCode = userLang.toLowerCase();
-
-            if (langCode.startsWith('zh')) {
-                if (langCode.includes('cn') || langCode.includes('sg') || langCode.includes('hans')) {
-                    return 'zh-CN';
-                }
-                return 'zh-TW'; 
-            }
-            if (langCode.startsWith('ja')) return 'ja';
-            if (langCode.startsWith('ko')) return 'ko';
-            if (langCode.startsWith('en')) return 'en';
-            
-            return 'zh-TW'; 
-        }
-
-        let currentLang = detectSystemLanguage();
-
-        const translations = {
-            'zh-TW': {
-                title: "分數運算工具", mode_sum: "加總模式", mode_calc: "運算模式",
-                add_btn: "新增分數", calc_btn: "開始計算", reset_btn: "重置",
-                result_label: "最終結果", step_simplify: "個別約分 (Simplification)",
-                step_common: "通分過程 (Common Denominator)", step_expand: "擴分範例 (Expansion)",
-                placeholder_num: "分子", placeholder_den: "分母",
-                alert_fill: "請填寫所有欄位", alert_zero: "分母不能為 0", alert_min_rows: "至少需要保留兩組分數",
-                text_gcd: "使用公約數", text_simplify_done: "目前的輸入分數已是最簡分數，無需約分。", 
-                text_lcm: "最小公倍數 (分母)", text_expand_factor: "擴分倍數",
-                btn_copy_all: "複製結果", btn_copy_num: "僅分子", btn_copy_den: "僅分母", msg_copied: "已複製！",
-                theme_system: "跟隨系統", theme_light: "淺色", theme_dark: "深色"
-            },
-            'en': {
-                title: "Fraction Calculator", mode_sum: "Sum Mode", mode_calc: "Calc Mode",
-                add_btn: "Add Fraction", calc_btn: "Calculate", reset_btn: "Reset",
-                result_label: "Final Result", step_simplify: "Simplification",
-                step_common: "Common Denominator", step_expand: "Expansion Example",
-                placeholder_num: "Num", placeholder_den: "Denom",
-                alert_fill: "Please fill in all fields", alert_zero: "Denominator cannot be 0", alert_min_rows: "At least two fractions required",
-                text_gcd: "GCD", text_simplify_done: "Fractions are already simplified.", 
-                text_lcm: "LCM (Denominator)", text_expand_factor: "Factor",
-                btn_copy_all: "Copy Result", btn_copy_num: "Numerator", btn_copy_den: "Denominator", msg_copied: "Copied!",
-                theme_system: "System", theme_light: "Light", theme_dark: "Dark"
-            },
-            'ja': {
-                title: "分数計算ツール", mode_sum: "合計モード", mode_calc: "計算モード",
-                add_btn: "分数を追加", calc_btn: "計算する", reset_btn: "リセット",
-                result_label: "計算結果", step_simplify: "約分 (Simplification)",
-                step_common: "通分 (Common Denominator)", step_expand: "拡分 (Expansion)",
-                placeholder_num: "分子", placeholder_den: "分母",
-                alert_fill: "すべての項目を入力してください", alert_zero: "分母は0にできません", alert_min_rows: "少なくとも2つの分数が必要です",
-                text_gcd: "最大公約数", text_simplify_done: "既約分数です。約分は不要です。", 
-                text_lcm: "最小公倍数 (分母)", text_expand_factor: "拡分倍率",
-                btn_copy_all: "結果をコピー", btn_copy_num: "分子のみ", btn_copy_den: "分母のみ", msg_copied: "コピーしました！",
-                theme_system: "システム", theme_light: "ライト", theme_dark: "ダーク"
-            },
-            'ko': {
-                title: "분수 계산기", mode_sum: "합계 모드", mode_calc: "계산 모드",
-                add_btn: "분수 추가", calc_btn: "계산하기", reset_btn: "초기화",
-                result_label: "최종 결과", step_simplify: "개별 약분 (Simplification)",
-                step_common: "통분 과정 (Common Denominator)", step_expand: "확분 예시 (Expansion)",
-                placeholder_num: "분자", placeholder_den: "분모",
-                alert_fill: "모든 필드를 입력해 주세요", alert_zero: "분모는 0이 될 수 없습니다", alert_min_rows: "최소 두 개의 분수가 필요합니다",
-                text_gcd: "최대공약수", text_simplify_done: "이미 기약분수 상태입니다.", 
-                text_lcm: "최소공배수 (분모)", text_expand_factor: "배수",
-                btn_copy_all: "결과 복사", btn_copy_num: "분자만", btn_copy_den: "분모만", msg_copied: "복사되었습니다!",
-                theme_system: "시스템", theme_light: "라이트", theme_dark: "다크"
-            },
-            'zh-CN': {
-                title: "分数运算工具", mode_sum: "加总模式", mode_calc: "运算模式",
-                add_btn: "新增分数", calc_btn: "开始计算", reset_btn: "重置",
-                result_label: "最终结果", step_simplify: "个别约分 (Simplification)",
-                step_common: "通分过程 (Common Denominator)", step_expand: "扩分范例 (Expansion)",
-                placeholder_num: "分子", placeholder_den: "分母",
-                alert_fill: "请填写所有字段", alert_zero: "分母不能为 0", alert_min_rows: "至少需要保留两组分数",
-                text_gcd: "使用公约数", text_simplify_done: "目前的输入分数已是最简分数，无需约分。", 
-                text_lcm: "最小公倍数 (分母)", text_expand_factor: "扩分倍数",
-                btn_copy_all: "复制结果", btn_copy_num: "仅分子", btn_copy_den: "仅分母", msg_copied: "已复制！",
-                theme_system: "跟随系统", theme_light: "浅色", theme_dark: "深色"
-            }
-        };
 
         setupDropdown('lang', (value, optionElement) => {
             currentLang = value;
@@ -729,7 +558,6 @@
         function updateInterfaceLanguage(shouldCalc = true) {
             const t = translations[currentLang];
             document.documentElement.lang = currentLang;
-
             document.querySelectorAll('[data-i18n]').forEach(el => {
                 const key = el.getAttribute('data-i18n');
                 if (t[key]) el.innerText = t[key];
@@ -737,10 +565,12 @@
             document.querySelectorAll('.num-input').forEach((el, index) => {
                 el.placeholder = (index % 2 === 0) ? t.placeholder_num : t.placeholder_den;
             });
-            
-            if(shouldCalc && document.getElementById('result-area').style.display !== 'none') {
-                calculate(false);
-            }
+            const editBtn = document.getElementById('edit-mode-btn');
+            const editSpan = editBtn.querySelector('span:last-child');
+            const isEdit = document.body.classList.contains('edit-mode');
+            editSpan.innerText = isEdit ? t.btn_done : t.btn_sort;
+
+            if(shouldCalc && document.getElementById('result-area').style.display !== 'none') calculate(false);
             updateThemeUI(themeState);
         }
 
@@ -761,16 +591,11 @@
             if (isDark) document.body.setAttribute('data-theme', 'dark');
             else document.body.removeAttribute('data-theme');
         }
-
         systemThemeQuery.addEventListener('change', () => { if (themeState === 'system') applyTheme(); });
 
-        // ============================================
-        // 1. 初始化邏輯
-        // ============================================
         function initLanguageUI() {
             const langOptions = document.querySelectorAll('#lang-options .option');
             let selectedText = '';
-            
             langOptions.forEach(opt => {
                 if(opt.getAttribute('data-value') === currentLang) {
                     opt.classList.add('selected');
@@ -779,54 +604,66 @@
                     opt.classList.remove('selected');
                 }
             });
-            
-            if(selectedText) {
-                document.getElementById('current-lang-text').innerText = selectedText;
-            }
-            
+            if(selectedText) document.getElementById('current-lang-text').innerText = selectedText;
             updateInterfaceLanguage(false);
         }
 
-        // ============================================
-        // 2. 介面動態管理 (Rows UI State)
-        // ============================================
         let currentMode = 'sum';
-
         function setMode(mode) {
             currentMode = mode;
             document.body.setAttribute('data-mode', mode);
             if(document.getElementById('result-area').style.display !== 'none') calculate(false);
         }
 
-        // 專屬函式：初始化 Custom Operator Select
         function initOperatorSelect(customSelect) {
             const trigger = customSelect.querySelector('.select-trigger');
             const optionsContainer = customSelect.querySelector('.select-options');
             const options = customSelect.querySelectorAll('.option');
-            
-            // 觸發展開
+            const parentRow = customSelect.closest('.fraction-row');
+
             trigger.addEventListener('click', (e) => {
                 e.stopPropagation();
-                // 關閉其他選單
-                document.querySelectorAll('.select-options').forEach(el => { if(el !== optionsContainer) el.classList.remove('open'); });
+                // Close all others
+                document.querySelectorAll('.select-options').forEach(el => { 
+                    if(el !== optionsContainer) {
+                        el.classList.remove('open');
+                        // Remove z-index boost from other rows
+                        const row = el.closest('.fraction-row');
+                        if(row) row.classList.remove('z-elevated');
+                    }
+                });
+                
                 optionsContainer.classList.toggle('open');
+                
+                // Toggle Z-Index Elevation for the parent row
+                if (optionsContainer.classList.contains('open')) {
+                    parentRow.classList.add('z-elevated');
+                    // Smart Positioning Logic
+                    const rect = trigger.getBoundingClientRect();
+                    // Estimate dropdown height (~4 items * 40px + padding) -> approx 180px
+                    const dropdownHeight = 180; 
+                    const spaceBelow = window.innerHeight - rect.bottom;
+                    
+                    optionsContainer.classList.remove('opens-up', 'opens-down');
+                    if (spaceBelow < dropdownHeight) {
+                        optionsContainer.classList.add('opens-up');
+                    } else {
+                        optionsContainer.classList.add('opens-down');
+                    }
+                } else {
+                    parentRow.classList.remove('z-elevated');
+                }
             });
 
-            // 選項點擊
             options.forEach(opt => {
                 opt.addEventListener('click', (e) => {
                     e.stopPropagation();
                     const val = opt.getAttribute('data-value');
                     const text = opt.innerText;
-                    
-                    // 更新觸發器顯示文字 (Math Symbol)
                     trigger.querySelector('span:first-child').innerText = text;
-                    // 更新實際值
                     customSelect.setAttribute('data-value', val);
-                    
                     optionsContainer.classList.remove('open');
-                    
-                    // 重新計算
+                    parentRow.classList.remove('z-elevated');
                     calculate(false);
                 });
             });
@@ -835,79 +672,125 @@
         function createRowHTML(defNum, defDen) {
             const div = document.createElement('div');
             div.className = 'fraction-row';
+            div.draggable = true; 
             
-            // Custom Operator Select Structure
             const opHTML = `
                 <div class="custom-select operator-select-wrapper" data-value="add">
-                    <button class="select-trigger">
-                        <span>+</span>
-                        <span class="material-symbols-rounded" style="font-size: 1.2em;">expand_more</span>
-                    </button>
+                    <button class="select-trigger"><span>+</span><span class="material-symbols-rounded" style="font-size: 1.2em;">expand_more</span></button>
                     <div class="select-options">
-                        <div class="option" data-value="add">+</div>
-                        <div class="option" data-value="subtract">-</div>
-                        <div class="option" data-value="multiply">×</div>
-                        <div class="option" data-value="divide">÷</div>
+                        <div class="option" data-value="add">+</div><div class="option" data-value="subtract">-</div><div class="option" data-value="multiply">×</div><div class="option" data-value="divide">÷</div>
                     </div>
                 </div>
                 <span class="fixed-plus">+</span>
             `;
             
             div.innerHTML = `
+                <div class="drag-handle"><span class="material-symbols-rounded">drag_indicator</span></div>
                 <div class="row-index"></div>
-                <div class="operator-container">
-                    ${opHTML}
-                </div>
+                <div class="operator-container">${opHTML}</div>
                 <div class="fraction-input-wrapper">
-                    <input type="number" 
-                           inputmode="numeric" 
-                           pattern="[0-9]*" 
-                           oninput="this.value = this.value.replace(/[^0-9]/g, '')"
-                           class="num-input" 
-                           placeholder="${translations[currentLang].placeholder_num}" 
-                           value="${defNum || ''}">
+                    <input type="number" inputmode="numeric" pattern="[0-9]*" oninput="this.value = this.value.replace(/[^0-9]/g, '')" class="num-input" placeholder="${translations[currentLang].placeholder_num}" value="${defNum || ''}">
                     <span class="separator">/</span>
-                    <input type="number" 
-                           inputmode="numeric" 
-                           pattern="[0-9]*" 
-                           oninput="this.value = this.value.replace(/[^0-9]/g, '')"
-                           class="num-input" 
-                           placeholder="${translations[currentLang].placeholder_den}" 
-                           value="${defDen || ''}">
+                    <input type="number" inputmode="numeric" pattern="[0-9]*" oninput="this.value = this.value.replace(/[^0-9]/g, '')" class="num-input" placeholder="${translations[currentLang].placeholder_den}" value="${defDen || ''}">
                 </div>
-                <button class="icon-btn delete-btn" onclick="removeRow(this)">
-                    <span class="material-symbols-rounded">close</span>
-                </button>
+                <button class="icon-btn delete-btn" onclick="removeRow(this)"><span class="material-symbols-rounded">close</span></button>
             `;
             
-            // Initialize the custom selector logic for this new row
             const customOpSelect = div.querySelector('.operator-select-wrapper');
             if(customOpSelect) initOperatorSelect(customOpSelect);
 
+            div.addEventListener('dragstart', handleDragStart);
+            div.addEventListener('dragover', handleDragOver);
+            div.addEventListener('drop', handleDrop);
+            div.addEventListener('dragend', handleDragEnd);
+
+            const handle = div.querySelector('.drag-handle');
+            handle.addEventListener('touchstart', handleTouchStart, {passive: false});
+            handle.addEventListener('touchmove', handleTouchMove, {passive: false});
+            handle.addEventListener('touchend', handleTouchEnd);
+
             return div;
+        }
+
+        // ... (Drag & Drop Logic same as v33) ...
+        let draggedItem = null;
+        let touchItem = null;
+
+        function handleDragStart(e) {
+            if (!document.body.classList.contains('edit-mode')) { e.preventDefault(); return; }
+            draggedItem = this;
+            e.dataTransfer.effectAllowed = 'move';
+            this.classList.add('dragging');
+        }
+        function handleDragOver(e) {
+            if (e.preventDefault) e.preventDefault();
+            return false;
+        }
+        function handleDrop(e) {
+            e.stopPropagation();
+            if (draggedItem !== this) {
+                const list = document.getElementById('fraction-list');
+                const allItems = [...list.querySelectorAll('.fraction-row')];
+                const draggedIndex = allItems.indexOf(draggedItem);
+                const targetIndex = allItems.indexOf(this);
+                if (draggedIndex < targetIndex) this.after(draggedItem);
+                else this.before(draggedItem);
+                updateUIState(true);
+            }
+            return false;
+        }
+        function handleDragEnd() {
+            this.classList.remove('dragging');
+            draggedItem = null;
+        }
+        function handleTouchStart(e) {
+            if (!document.body.classList.contains('edit-mode')) return;
+            touchItem = this.closest('.fraction-row');
+        }
+        function handleTouchMove(e) {
+            if (!touchItem) return;
+            e.preventDefault(); 
+            const touch = e.touches[0];
+            const elementBelow = document.elementFromPoint(touch.clientX, touch.clientY);
+            if (!elementBelow) return;
+            const targetRow = elementBelow.closest('.fraction-row');
+            if (targetRow && targetRow !== touchItem) {
+                const list = document.getElementById('fraction-list');
+                const allItems = [...list.querySelectorAll('.fraction-row')];
+                const draggedIndex = allItems.indexOf(touchItem);
+                const targetIndex = allItems.indexOf(targetRow);
+                if (draggedIndex < targetIndex) targetRow.after(touchItem);
+                else targetRow.before(touchItem);
+            }
+        }
+        function handleTouchEnd(e) {
+            if (touchItem) {
+                touchItem = null;
+                updateUIState(true);
+            }
+        }
+
+        function toggleEditMode() {
+            const btn = document.getElementById('edit-mode-btn');
+            const icon = btn.querySelector('.material-symbols-rounded');
+            const text = btn.querySelector('span:last-child');
+            const t = translations[currentLang];
+            document.body.classList.toggle('edit-mode');
+            const isEdit = document.body.classList.contains('edit-mode');
+            if (isEdit) { icon.textContent = 'check'; text.innerText = t.btn_done; btn.classList.add('active'); } 
+            else { icon.textContent = 'sort'; text.innerText = t.btn_sort; btn.classList.remove('active'); }
         }
 
         function updateUIState(shouldCalc = true) {
             const rows = document.querySelectorAll('.fraction-row');
             const count = rows.length;
-
             rows.forEach((row, index) => {
                 const indexLabel = row.querySelector('.row-index');
                 if(indexLabel) indexLabel.textContent = `#${index + 1}`;
-
                 const opContainer = row.querySelector('.operator-container');
-                if (index === 0) {
-                    opContainer.style.visibility = 'hidden';
-                } else {
-                    opContainer.style.visibility = 'visible';
-                }
-
+                opContainer.style.visibility = (index === 0) ? 'hidden' : 'visible';
                 const deleteBtn = row.querySelector('.delete-btn');
-                if (count <= 2) {
-                    deleteBtn.style.display = 'none';
-                } else {
-                    deleteBtn.style.display = 'flex';
-                }
+                deleteBtn.style.display = (count <= 2) ? 'none' : 'flex';
             });
             updateInterfaceLanguage(shouldCalc); 
         }
@@ -938,11 +821,9 @@
         function resetForm() {
             initInputs();
             document.getElementById('result-area').style.display = 'none';
+            if (document.body.classList.contains('edit-mode')) toggleEditMode();
         }
 
-        // ============================================
-        // 3. 核心運算
-        // ============================================
         function gcd(a, b) { return b ? gcd(b, a % b) : a; }
         function lcm(a, b) { if (a === 0 || b === 0) return 0; return Math.abs(a * b) / gcd(a, b); }
         function simplify(n, d) { const common = gcd(Math.abs(n), Math.abs(d)); return { n: n / common, d: d / common }; }
@@ -958,19 +839,14 @@
                     const inputs = row.querySelectorAll('input');
                     const val1 = inputs[0].value.trim();
                     const val2 = inputs[1].value.trim();
-
                     if (val1 === '' && val2 === '') return; 
                     if (val1 === '' || val2 === '') throw new Error(t.alert_fill);
-
                     const n = parseInt(val1);
                     const d = parseInt(val2);
-
                     if (isNaN(n) || isNaN(d)) throw new Error(t.alert_fill);
                     if (d === 0) throw new Error(t.alert_zero);
-
                     let op = 'add';
                     if (validIndex > 0) {
-                        // Retrieve value from custom select's data attribute
                         if (currentMode === 'sum') {
                             op = 'add';
                         } else {
@@ -981,13 +857,11 @@
                     fractions.push({ n, d, op });
                     validIndex++;
                 });
-
                 if (fractions.length < 2) {
                     if (isManual) throw new Error(t.alert_min_rows);
                     document.getElementById('result-area').style.display = 'none';
                     return;
                 }
-
             } catch (e) {
                 if (isManual) alert(e.message);
                 else document.getElementById('result-area').style.display = 'none';
@@ -999,14 +873,11 @@
 
             for (let i = 1; i < fractions.length; i++) {
                 const next = fractions[i];
-                // Determine symbol for display
                 let opSymbol = '+';
                 if(next.op === 'subtract') opSymbol = '-';
                 else if(next.op === 'multiply') opSymbol = '×';
                 else if(next.op === 'divide') opSymbol = '÷';
-
                 expressionString += ` ${opSymbol} ${next.n}/${next.d}`;
-                
                 let resN, resD;
                 if (next.op === 'add') { resN = current.n * next.d + next.n * current.d; resD = current.d * next.d; }
                 else if (next.op === 'subtract') { resN = current.n * next.d - next.n * current.d; resD = current.d * next.d; }
@@ -1022,39 +893,22 @@
 
             resultArea.style.display = 'block';
             calcProcess.textContent = expressionString + " = ";
-            
             resultVal.setAttribute('data-num', current.n);
             resultVal.setAttribute('data-den', current.d);
-
-            // Update Display (Switch to Stacked if needed)
             updateResultDisplay(current.n, current.d);
-
             generateEducationalDetails(fractions);
         }
 
-        // New function to handle Stacked vs Linear display
         function updateResultDisplay(num, den) {
             const resultVal = document.getElementById('final-result');
             const container = document.getElementById('result-container');
-            
-            // Reset to linear first
             resultVal.classList.remove('stacked');
-            if (den === 1) {
-                resultVal.textContent = num;
-            } else {
-                resultVal.innerHTML = `${num} / ${den}`;
-            }
-
-            // Check overflow
+            if (den === 1) resultVal.textContent = num;
+            else resultVal.innerHTML = `${num} / ${den}`;
             if (resultVal.scrollWidth > container.clientWidth) {
                 if (den !== 1) {
                     resultVal.classList.add('stacked');
-                    resultVal.innerHTML = `
-                        <div class="fraction-stack">
-                            <span class="numerator">${num}</span>
-                            <span class="denominator">${den}</span>
-                        </div>
-                    `;
+                    resultVal.innerHTML = `<div class="fraction-stack"><span class="numerator">${num}</span><span class="denominator">${den}</span></div>`;
                 }
             }
         }
@@ -1066,7 +920,6 @@
                 const divisor = gcd(Math.abs(f.n), Math.abs(f.d));
                 if (divisor > 1) {
                     hasSimplify = true;
-                    // idx+1 for visual order, matching #1, #2
                     simplifyHTML += `<div class="math-row"><span>#${idx+1} (${f.n}/${f.d}) ÷ ${divisor} = <strong>${f.n/divisor}/${f.d/divisor}</strong></span><span class="math-note">${t.text_gcd}: ${divisor}</span></div>`;
                 }
             });
@@ -1096,14 +949,9 @@
             const den = resultEl.getAttribute('data-den');
             let textToCopy = "";
             if (!num) return;
-            
-            if (type === 'all') {
-                if (den === "1" || den == 1) textToCopy = num;
-                else textToCopy = `${num}/${den}`;
-            }
+            if (type === 'all') { if (den === "1" || den == 1) textToCopy = num; else textToCopy = `${num}/${den}`; }
             else if (type === 'num') textToCopy = num;
             else if (type === 'den') textToCopy = den || "1";
-            
             if (navigator.clipboard && navigator.clipboard.writeText) { navigator.clipboard.writeText(textToCopy).then(showToast); }
             else { const ta = document.createElement('textarea'); ta.value = textToCopy; document.body.appendChild(ta); ta.select(); document.execCommand('copy'); document.body.removeChild(ta); showToast(); }
         }
@@ -1115,7 +963,6 @@
             setTimeout(() => { toast.classList.remove('show-toast'); }, 2000);
         }
 
-        // Start
         initLanguageUI();
         applyTheme();
         initInputs();
