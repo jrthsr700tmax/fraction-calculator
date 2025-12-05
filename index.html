@@ -94,7 +94,6 @@
             margin-bottom: 25px;
         }
 
-        /* Top Controls Wrapper */
         .top-controls-wrapper {
             display: flex;
             justify-content: flex-end;
@@ -131,6 +130,7 @@
             align-items: center;
         }
 
+        /* General Custom Select Styles */
         .custom-select { position: relative; font-size: 0.9em; min-width: 140px; }
         .select-trigger {
             display: flex; justify-content: space-between; align-items: center; padding: 0 14px; height: 40px;
@@ -235,19 +235,63 @@
             font-weight: 700; width: 30px; text-align: center; flex-shrink: 0; opacity: 0.8;
         }
 
-        .operator-container { width: 60px; display: flex; justify-content: center; align-items: center; flex-shrink: 0; visibility: visible; }
-        .operator-select {
-            padding: 8px; border-radius: 8px; border: 1px solid var(--border-color);
-            background: var(--bg-card); color: var(--text-primary); font-size: 1.1em;
-            cursor: pointer; width: 100%; text-align: center; font-family: inherit;
+        /* Operator Select Custom Styling (Matches Header Selects) */
+        .operator-container { 
+            width: 70px; /* Slightly wider for the custom select */
+            display: flex; justify-content: center; align-items: center; flex-shrink: 0; 
+            visibility: visible; 
+            /* Ensure z-index allows dropdown to show over input */
+            z-index: 5; 
         }
-        .fixed-plus { display: none; font-size: 1.5em; color: var(--text-secondary); font-weight: bold; }
-        body[data-mode="sum"] .operator-select { display: none; }
+        
+        .operator-select-wrapper {
+            width: 100%;
+            min-width: unset; /* Override default custom-select min-width */
+        }
+
+        .operator-select-wrapper .select-trigger {
+            padding: 0 8px; /* Tighter padding */
+            justify-content: center;
+            gap: 4px;
+        }
+
+        .operator-select-wrapper .select-trigger span:first-child {
+            font-size: 1.2em;
+            font-weight: bold;
+        }
+
+        .operator-select-wrapper .select-options {
+            min-width: 100%; /* Dropdown width matches trigger */
+            width: 120px; /* Or slightly wider for better touch targets */
+            left: 50%;
+            transform: translateX(-50%);
+            top: 45px;
+            text-align: center;
+        }
+        
+        /* Dropdown Animation override for centered transform */
+        @keyframes slideDownCenter { 
+            from { opacity: 0; transform: translateX(-50%) translateY(-10px); } 
+            to { opacity: 1; transform: translateX(-50%) translateY(0); } 
+        }
+        .operator-select-wrapper .select-options { animation: slideDownCenter 0.2s ease; }
+
+        .operator-select-wrapper .option {
+            justify-content: center;
+            font-size: 1.2em;
+            font-weight: bold;
+        }
+
+        .fixed-plus { display: none; font-size: 1.5em; color: var(--text-secondary); font-weight: bold; text-align: center; width: 100%; }
+        
+        /* Mode handling */
+        body[data-mode="sum"] .operator-select-wrapper { display: none; }
         body[data-mode="sum"] .fixed-plus { display: block; }
         
         .fraction-input-wrapper {
             flex: 1; display: flex; align-items: center; background: var(--bg-primary);
             border: 1px solid transparent; border-radius: 12px; padding: 4px; transition: all 0.2s;
+            z-index: 1; /* Below operator dropdown */
         }
         .fraction-input-wrapper:focus-within { background: var(--bg-card); border-color: var(--accent-color); box-shadow: 0 0 0 2px var(--accent-light); }
         .num-input {
@@ -343,21 +387,11 @@
 
         .result-expression { font-size: 1em; color: var(--text-secondary); margin-top: 15px; font-family: SF Mono, monospace; word-break: break-all; }
 
-        /* Copy Buttons */
-        .copy-actions { 
-            display: flex; 
-            justify-content: center; 
-            gap: 10px; 
-            margin-top: 20px; 
-            /* 預設為橫向排列 (桌面版) */
-            flex-direction: row; 
-        }
-
+        .copy-actions { display: flex; justify-content: center; gap: 10px; margin-top: 20px; flex-wrap: wrap; }
         .copy-btn {
             padding: 8px 12px; font-size: 0.85em; border-radius: 8px; border: 1px solid var(--border-color);
             background: var(--bg-card); color: var(--text-secondary); cursor: pointer; display: flex;
             align-items: center; gap: 5px; transition: all 0.2s; font-family: inherit;
-            /* 允許按鈕文字不換行 */
             white-space: nowrap; 
         }
         .copy-btn:hover { background: var(--bg-primary); color: var(--accent-color); border-color: var(--accent-color); }
@@ -386,13 +420,11 @@
         }
         .math-note { font-size: 0.8em; color: var(--text-secondary); font-family: -apple-system, sans-serif; }
 
-        /* Media Query for Mobile (Optimized) */
         @media (max-width: 600px) {
             .btn-group { flex-direction: column; }
             .result-value { font-size: 2.2em; }
             #educational-steps { grid-template-columns: 1fr; }
             
-            /* 優化點 1: 行動版強制垂直排列，避免單個按鈕溢出 */
             .copy-actions {
                 flex-direction: column;
                 width: 100%;
@@ -549,7 +581,7 @@
         window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', updateFavicon);
         updateFavicon();
 
-        // 2. Mobile Menu
+        // 2. Mobile Menu & Dropdowns
         const mobileSettingsBtn = document.getElementById('mobile-settings-toggle');
         const controlsGroup = document.getElementById('controls-group');
 
@@ -559,11 +591,44 @@
             controlsGroup.classList.toggle('show');
         });
 
+        // Setup dropdown logic
+        function setupDropdown(idPrefix, onSelectCallback) {
+            const container = document.getElementById(`${idPrefix}-select`);
+            const trigger = document.getElementById(`${idPrefix}-trigger`);
+            const options = document.getElementById(`${idPrefix}-options`);
+            trigger.addEventListener('click', (e) => {
+                e.stopPropagation();
+                document.querySelectorAll('.select-options').forEach(el => { if(el !== options) el.classList.remove('open'); });
+                options.classList.toggle('open');
+            });
+            options.querySelectorAll('.option').forEach(option => {
+                option.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    const value = option.getAttribute('data-value');
+                    options.querySelectorAll('.option').forEach(opt => opt.classList.remove('selected'));
+                    option.classList.add('selected');
+                    options.classList.remove('open');
+                    
+                    // Auto-collapse mobile menu on selection
+                    if (controlsGroup.classList.contains('show')) {
+                        controlsGroup.classList.remove('show');
+                        mobileSettingsBtn.classList.remove('active');
+                    }
+
+                    onSelectCallback(value, option);
+                });
+            });
+            document.addEventListener('click', (e) => { if (!container.contains(e.target)) options.classList.remove('open'); });
+        }
+
+        // Global click listener to close everything
         document.addEventListener('click', (e) => {
             if (!controlsGroup.contains(e.target) && e.target !== mobileSettingsBtn && !mobileSettingsBtn.contains(e.target)) {
                 controlsGroup.classList.remove('show');
                 mobileSettingsBtn.classList.remove('active');
             }
+            // Also close all dropdowns
+            document.querySelectorAll('.select-options.open').forEach(el => el.classList.remove('open'));
         });
 
         // 3. Auto-Detect Language
@@ -649,28 +714,6 @@
             }
         };
 
-        function setupDropdown(idPrefix, onSelectCallback) {
-            const container = document.getElementById(`${idPrefix}-select`);
-            const trigger = document.getElementById(`${idPrefix}-trigger`);
-            const options = document.getElementById(`${idPrefix}-options`);
-            trigger.addEventListener('click', (e) => {
-                e.stopPropagation();
-                document.querySelectorAll('.select-options').forEach(el => { if(el !== options) el.classList.remove('open'); });
-                options.classList.toggle('open');
-            });
-            options.querySelectorAll('.option').forEach(option => {
-                option.addEventListener('click', (e) => {
-                    e.stopPropagation();
-                    const value = option.getAttribute('data-value');
-                    options.querySelectorAll('.option').forEach(opt => opt.classList.remove('selected'));
-                    option.classList.add('selected');
-                    options.classList.remove('open');
-                    onSelectCallback(value, option);
-                });
-            });
-            document.addEventListener('click', (e) => { if (!container.contains(e.target)) options.classList.remove('open'); });
-        }
-
         setupDropdown('lang', (value, optionElement) => {
             currentLang = value;
             document.getElementById('current-lang-text').textContent = optionElement.innerText;
@@ -755,16 +798,58 @@
             if(document.getElementById('result-area').style.display !== 'none') calculate(false);
         }
 
+        // 專屬函式：初始化 Custom Operator Select
+        function initOperatorSelect(customSelect) {
+            const trigger = customSelect.querySelector('.select-trigger');
+            const optionsContainer = customSelect.querySelector('.select-options');
+            const options = customSelect.querySelectorAll('.option');
+            
+            // 觸發展開
+            trigger.addEventListener('click', (e) => {
+                e.stopPropagation();
+                // 關閉其他選單
+                document.querySelectorAll('.select-options').forEach(el => { if(el !== optionsContainer) el.classList.remove('open'); });
+                optionsContainer.classList.toggle('open');
+            });
+
+            // 選項點擊
+            options.forEach(opt => {
+                opt.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    const val = opt.getAttribute('data-value');
+                    const text = opt.innerText;
+                    
+                    // 更新觸發器顯示文字 (Math Symbol)
+                    trigger.querySelector('span:first-child').innerText = text;
+                    // 更新實際值
+                    customSelect.setAttribute('data-value', val);
+                    
+                    optionsContainer.classList.remove('open');
+                    
+                    // 重新計算
+                    calculate(false);
+                });
+            });
+        }
+
         function createRowHTML(defNum, defDen) {
             const div = document.createElement('div');
             div.className = 'fraction-row';
+            
+            // Custom Operator Select Structure
             const opHTML = `
-                <select class="operator-select">
-                    <option value="add">+</option>
-                    <option value="subtract">-</option>
-                    <option value="multiply">×</option>
-                    <option value="divide">÷</option>
-                </select>
+                <div class="custom-select operator-select-wrapper" data-value="add">
+                    <button class="select-trigger">
+                        <span>+</span>
+                        <span class="material-symbols-rounded" style="font-size: 1.2em;">expand_more</span>
+                    </button>
+                    <div class="select-options">
+                        <div class="option" data-value="add">+</div>
+                        <div class="option" data-value="subtract">-</div>
+                        <div class="option" data-value="multiply">×</div>
+                        <div class="option" data-value="divide">÷</div>
+                    </div>
+                </div>
                 <span class="fixed-plus">+</span>
             `;
             
@@ -794,6 +879,11 @@
                     <span class="material-symbols-rounded">close</span>
                 </button>
             `;
+            
+            // Initialize the custom selector logic for this new row
+            const customOpSelect = div.querySelector('.operator-select-wrapper');
+            if(customOpSelect) initOperatorSelect(customOpSelect);
+
             return div;
         }
 
@@ -880,7 +970,13 @@
 
                     let op = 'add';
                     if (validIndex > 0) {
-                        op = (currentMode === 'sum') ? 'add' : row.querySelector('select').value;
+                        // Retrieve value from custom select's data attribute
+                        if (currentMode === 'sum') {
+                            op = 'add';
+                        } else {
+                            const customSelect = row.querySelector('.operator-select-wrapper');
+                            op = customSelect ? customSelect.getAttribute('data-value') : 'add';
+                        }
                     }
                     fractions.push({ n, d, op });
                     validIndex++;
@@ -903,8 +999,14 @@
 
             for (let i = 1; i < fractions.length; i++) {
                 const next = fractions[i];
-                const opSymbol = next.op === 'add' ? '+' : next.op === 'subtract' ? '-' : next.op === 'multiply' ? '×' : '÷';
+                // Determine symbol for display
+                let opSymbol = '+';
+                if(next.op === 'subtract') opSymbol = '-';
+                else if(next.op === 'multiply') opSymbol = '×';
+                else if(next.op === 'divide') opSymbol = '÷';
+
                 expressionString += ` ${opSymbol} ${next.n}/${next.d}`;
+                
                 let resN, resD;
                 if (next.op === 'add') { resN = current.n * next.d + next.n * current.d; resD = current.d * next.d; }
                 else if (next.op === 'subtract') { resN = current.n * next.d - next.n * current.d; resD = current.d * next.d; }
@@ -964,6 +1066,7 @@
                 const divisor = gcd(Math.abs(f.n), Math.abs(f.d));
                 if (divisor > 1) {
                     hasSimplify = true;
+                    // idx+1 for visual order, matching #1, #2
                     simplifyHTML += `<div class="math-row"><span>#${idx+1} (${f.n}/${f.d}) ÷ ${divisor} = <strong>${f.n/divisor}/${f.d/divisor}</strong></span><span class="math-note">${t.text_gcd}: ${divisor}</span></div>`;
                 }
             });
