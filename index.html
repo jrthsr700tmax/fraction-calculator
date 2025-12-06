@@ -4,8 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>分數計算機</title>
-
+    
     <link rel="icon" id="dynamic-favicon" href="">
+
+    <link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Cdefs%3E%3ClinearGradient id='grad' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3E%3Cstop offset='0%25' style='stop-color:%236200ee;stop-opacity:1' /%3E%3Cstop offset='100%25' style='stop-color:%23b81ec9;stop-opacity:1' /%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='512' height='512' fill='%23ffffff'/%3E%3Cpath d='M380 60H132c-22 0-40 18-40 40v312c0 22 18 40 40 40h248c22 0 40-18 40-40V100c0-22-18-40-40-40zm0 320H132V100h248v280zm-140-40h40v-40h-40v40zm-80 0h40v-40h-40v40zm80-80h40v-40h-40v40zm80 80h40v-40h-40v40zm0-80h40v-40h-40v40zm-160-80h40v-40h-40v40z' fill='url(%23grad)' transform='scale(0.8) translate(64,64)'/%3E%3C/svg%3E">
+
+    <meta property="og:image" content="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Cdefs%3E%3ClinearGradient id='grad' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3E%3Cstop offset='0%25' style='stop-color:%236200ee;stop-opacity:1' /%3E%3Cstop offset='100%25' style='stop-color:%23b81ec9;stop-opacity:1' /%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='512' height='512' fill='%23ffffff'/%3E%3Cpath d='M380 60H132c-22 0-40 18-40 40v312c0 22 18 40 40 40h248c22 0 40-18 40-40V100c0-22-18-40-40-40zm0 320H132V100h248v280zm-140-40h40v-40h-40v40zm-80 0h40v-40h-40v40zm80-80h40v-40h-40v40zm80 80h40v-40h-40v40zm0-80h40v-40h-40v40zm-160-80h40v-40h-40v40z' fill='url(%23grad)' transform='scale(0.8) translate(64,64)'/%3E%3C/svg%3E">
 
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
     
@@ -52,6 +56,12 @@
             --border-color: #49454f;
             --glass-bg: rgba(33, 31, 38, 0.85);
             --shadow-float: 0 8px 32px rgba(0, 0, 0, 0.4);
+        }
+
+        /* Focus Styles for Keyboard Accessibility */
+        :focus-visible {
+            outline: 2px solid var(--accent-color);
+            outline-offset: 2px;
         }
 
         body {
@@ -119,6 +129,13 @@
         }
         .option:hover { background: var(--bg-primary); color: var(--accent-color); }
         .option.selected { background: var(--accent-bg-subtle); font-weight: bold; color: var(--accent-color); }
+        
+        .option.key-active {
+            background: var(--bg-primary);
+            color: var(--accent-color);
+            outline: 2px solid var(--accent-color);
+            outline-offset: -2px;
+        }
 
         .app-title {
             text-align: center; margin: 0; font-size: 1.8em; font-weight: 700;
@@ -165,26 +182,16 @@
 
         /* Fraction Inputs */
         .fraction-list { display: flex; flex-direction: column; gap: 12px; margin-bottom: 20px; }
-        
-        /* v34 新增: .z-elevated 用於提升當前操作列的層級 */
         .fraction-row { 
             display: flex; align-items: center; gap: 10px; animation: fadeIn 0.3s ease-out; 
             transition: transform 0.2s, box-shadow 0.2s;
             background: var(--bg-card);
             border-radius: 12px;
-            position: relative; /* 關鍵：建立定位環境 */
-            z-index: 1; /* 預設層級 */
+            position: relative; 
+            z-index: 1;
         }
-        
-        .fraction-row.z-elevated {
-            z-index: 1000; /* 確保選單展開時在最上層 */
-        }
-
-        .fraction-row.dragging {
-            opacity: 0.5;
-            box-shadow: var(--shadow-float);
-            z-index: 2000; /* 拖曳時最高 */
-        }
+        .fraction-row.z-elevated { z-index: 1000; }
+        .fraction-row.dragging { opacity: 0.5; box-shadow: var(--shadow-float); z-index: 2000; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(-5px); } to { opacity: 1; transform: translateY(0); } }
 
         .drag-handle {
@@ -199,64 +206,33 @@
             font-weight: 700; width: 30px; text-align: center; flex-shrink: 0; opacity: 0.8;
         }
 
-        /* Operator Select Custom Styling (Optimized v34) */
+        /* Operator Select Custom Styling */
         .operator-container { 
             width: 70px; display: flex; justify-content: center; align-items: center; flex-shrink: 0; visibility: visible; 
             position: relative; 
             z-index: 5; 
         }
-        
         .operator-select-wrapper { width: 100%; min-width: unset; }
-        
         .operator-select-wrapper .select-trigger { 
-            padding: 0 8px; 
-            justify-content: center; 
-            gap: 4px;
+            padding: 0 8px; justify-content: center; gap: 4px;
             border-radius: var(--radius-input);
         }
-        
         .operator-select-wrapper .select-trigger span:first-child { font-size: 1.2em; font-weight: bold; }
         
-        /* 選單樣式與動畫 */
         .operator-select-wrapper .select-options {
-            position: absolute;
-            min-width: 100%; 
-            width: 120px; 
-            left: 50%; 
-            transform: translateX(-50%); 
-            text-align: center;
-            z-index: 100; 
-            /* 預設不指定 top/bottom，由 JS 控制 */
+            position: absolute; min-width: 100%; width: 120px; left: 50%; transform: translateX(-50%); 
+            text-align: center; z-index: 100; 
         }
-        
-        /* 向下展開 */
         .operator-select-wrapper .select-options.opens-down {
-            top: calc(100% + 4px);
-            bottom: auto;
-            transform-origin: top center;
-            animation: slideDownCenter 0.2s ease;
+            top: calc(100% + 4px); bottom: auto; transform-origin: top center; animation: slideDownCenter 0.2s ease;
         }
-        
-        /* 向上展開 (v34 Feature) */
         .operator-select-wrapper .select-options.opens-up {
-            bottom: calc(100% + 4px);
-            top: auto;
-            transform-origin: bottom center;
-            animation: slideUpCenter 0.2s ease;
+            bottom: calc(100% + 4px); top: auto; transform-origin: bottom center; animation: slideUpCenter 0.2s ease;
         }
-        
-        @keyframes slideDownCenter { 
-            from { opacity: 0; transform: translateX(-50%) translateY(-10px); } 
-            to { opacity: 1; transform: translateX(-50%) translateY(0); } 
-        }
-        
-        @keyframes slideUpCenter { 
-            from { opacity: 0; transform: translateX(-50%) translateY(10px); } 
-            to { opacity: 1; transform: translateX(-50%) translateY(0); } 
-        }
+        @keyframes slideDownCenter { from { opacity: 0; transform: translateX(-50%) translateY(-10px); } to { opacity: 1; transform: translateX(-50%) translateY(0); } }
+        @keyframes slideUpCenter { from { opacity: 0; transform: translateX(-50%) translateY(10px); } to { opacity: 1; transform: translateX(-50%) translateY(0); } }
 
         .operator-select-wrapper .option { justify-content: center; font-size: 1.2em; font-weight: bold; }
-        
         .fixed-plus { display: none; font-size: 1.5em; color: var(--text-secondary); font-weight: bold; text-align: center; width: 100%; }
         
         body[data-mode="sum"] .operator-select-wrapper { display: none; }
@@ -280,7 +256,6 @@
         }
         .icon-btn:hover:not(:disabled) { background: var(--border-color); color: var(--error-color); }
         .icon-btn:disabled { opacity: 0.3; cursor: not-allowed; }
-        
         .delete-btn { display: flex; } 
 
         .edit-toggle-wrapper { display: flex; justify-content: flex-end; margin-bottom: 10px; }
@@ -386,7 +361,7 @@
                             <div class="option" data-value="en">English</div>
                             <div class="option" data-value="ja">日本語</div>
                             <div class="option" data-value="ko">한국어</div>
-                            <div class="option" data-value="zh-CN">简体中文</div>
+                            <div class="option" data-value="zh-Hans">简体中文</div>
                         </div>
                     </div>
                     <div class="custom-select" id="theme-select" style="min-width: 140px;">
@@ -491,8 +466,6 @@
                 mobileSettingsBtn.classList.remove('active');
             }
             document.querySelectorAll('.select-options.open').forEach(el => el.classList.remove('open'));
-            
-            // Reset elevated z-index rows
             document.querySelectorAll('.fraction-row.z-elevated').forEach(el => el.classList.remove('z-elevated'));
         });
 
@@ -500,7 +473,7 @@
             const userLang = navigator.language || navigator.userLanguage; 
             const langCode = userLang.toLowerCase();
             if (langCode.startsWith('zh')) {
-                if (langCode.includes('cn') || langCode.includes('sg') || langCode.includes('hans')) return 'zh-CN';
+                if (langCode.includes('cn') || langCode.includes('sg') || langCode.includes('hans')) return 'zh-Hans';
                 return 'zh-TW'; 
             }
             if (langCode.startsWith('ja')) return 'ja';
@@ -515,7 +488,7 @@
             'en': { title: "Fraction Calculator", mode_sum: "Sum Mode", mode_calc: "Calc Mode", add_btn: "Add Fraction", calc_btn: "Calculate", reset_btn: "Reset", result_label: "Final Result", step_simplify: "Simplification", step_common: "Common Denominator", step_expand: "Expansion Example", placeholder_num: "Num", placeholder_den: "Denom", alert_fill: "Please fill in all fields", alert_zero: "Denominator cannot be 0", alert_min_rows: "At least two fractions required", text_gcd: "GCD", text_simplify_done: "Fractions are already simplified.", text_lcm: "LCM (Denominator)", text_expand_factor: "Factor", btn_copy_all: "Copy Result", btn_copy_num: "Numerator", btn_copy_den: "Denominator", msg_copied: "Copied!", theme_system: "System", theme_light: "Light", theme_dark: "Dark", btn_sort: "Edit Order", btn_done: "Done" },
             'ja': { title: "分数計算ツール", mode_sum: "合計モード", mode_calc: "計算モード", add_btn: "分数を追加", calc_btn: "計算する", reset_btn: "リセット", result_label: "計算結果", step_simplify: "約分 (Simplification)", step_common: "通分 (Common Denominator)", step_expand: "拡分 (Expansion)", placeholder_num: "分子", placeholder_den: "分母", alert_fill: "すべての項目を入力してください", alert_zero: "分母は0にできません", alert_min_rows: "少なくとも2つの分数が必要です", text_gcd: "最大公約数", text_simplify_done: "既約分数です。約分は不要です。", text_lcm: "最小公倍数 (分母)", text_expand_factor: "拡分倍率", btn_copy_all: "結果をコピー", btn_copy_num: "分子のみ", btn_copy_den: "分母のみ", msg_copied: "コピーしました！", theme_system: "システム", theme_light: "ライト", theme_dark: "ダーク", btn_sort: "並べ替え編集", btn_done: "完了" },
             'ko': { title: "분수 계산기", mode_sum: "합계 모드", mode_calc: "계산 모드", add_btn: "분수 추가", calc_btn: "계산하기", reset_btn: "초기화", result_label: "최종 결과", step_simplify: "개별 약분 (Simplification)", step_common: "통분 과정 (Common Denominator)", step_expand: "확분 예시 (Expansion)", placeholder_num: "분자", placeholder_den: "분모", alert_fill: "모든 필드를 입력해 주세요", alert_zero: "분모는 0이 될 수 없습니다", alert_min_rows: "최소 두 개의 분수가 필요합니다", text_gcd: "최대공약수", text_simplify_done: "이미 기약분수 상태입니다.", text_lcm: "최소공배수 (분모)", text_expand_factor: "배수", btn_copy_all: "결과 복사", btn_copy_num: "분자만", btn_copy_den: "분모만", msg_copied: "복사되었습니다!", theme_system: "시스템", theme_light: "라이트", theme_dark: "다크", btn_sort: "순서 편집", btn_done: "완료" },
-            'zh-CN': { title: "分数运算工具", mode_sum: "加总模式", mode_calc: "运算模式", add_btn: "新增分数", calc_btn: "开始计算", reset_btn: "重置", result_label: "最终结果", step_simplify: "个别约分 (Simplification)", step_common: "通分过程 (Common Denominator)", step_expand: "扩分范例 (Expansion)", placeholder_num: "分子", placeholder_den: "分母", alert_fill: "请填写所有字段", alert_zero: "分母不能为 0", alert_min_rows: "至少需要保留两组分数", text_gcd: "使用公约数", text_simplify_done: "目前的输入分数已是最简分数，无需约分。", text_lcm: "最小公倍数 (分母)", text_expand_factor: "扩分倍数", btn_copy_all: "复制结果", btn_copy_num: "仅分子", btn_copy_den: "仅分母", msg_copied: "已复制！", theme_system: "跟随系统", theme_light: "浅色", theme_dark: "深色", btn_sort: "编辑排序", btn_done: "完成" }
+            'zh-Hans': { title: "分数运算工具", mode_sum: "加总模式", mode_calc: "运算模式", add_btn: "新增分数", calc_btn: "开始计算", reset_btn: "重置", result_label: "最终结果", step_simplify: "个别约分 (Simplification)", step_common: "通分过程 (Common Denominator)", step_expand: "扩分范例 (Expansion)", placeholder_num: "分子", placeholder_den: "分母", alert_fill: "请填写所有字段", alert_zero: "分母不能为 0", alert_min_rows: "至少需要保留两组分数", text_gcd: "使用公约数", text_simplify_done: "目前的输入分数已是最简分数，无需约分。", text_lcm: "最小公倍数 (分母)", text_expand_factor: "扩分倍数", btn_copy_all: "复制结果", btn_copy_num: "仅分子", btn_copy_den: "仅分母", msg_copied: "已复制！", theme_system: "跟随系统", theme_light: "浅色", theme_dark: "深色", btn_sort: "编辑排序", btn_done: "完成" }
         };
 
         function setupDropdown(idPrefix, onSelectCallback) {
@@ -534,13 +507,16 @@
                     options.querySelectorAll('.option').forEach(opt => opt.classList.remove('selected'));
                     option.classList.add('selected');
                     options.classList.remove('open');
+                    
                     if (controlsGroup.classList.contains('show')) {
                         controlsGroup.classList.remove('show');
                         mobileSettingsBtn.classList.remove('active');
                     }
+
                     onSelectCallback(value, option);
                 });
             });
+            document.addEventListener('click', (e) => { if (!container.contains(e.target)) options.classList.remove('open'); });
         }
 
         setupDropdown('lang', (value, optionElement) => {
@@ -558,6 +534,7 @@
         function updateInterfaceLanguage(shouldCalc = true) {
             const t = translations[currentLang];
             document.documentElement.lang = currentLang;
+
             document.querySelectorAll('[data-i18n]').forEach(el => {
                 const key = el.getAttribute('data-i18n');
                 if (t[key]) el.innerText = t[key];
@@ -565,6 +542,7 @@
             document.querySelectorAll('.num-input').forEach((el, index) => {
                 el.placeholder = (index % 2 === 0) ? t.placeholder_num : t.placeholder_den;
             });
+            
             const editBtn = document.getElementById('edit-mode-btn');
             const editSpan = editBtn.querySelector('span:last-child');
             const isEdit = document.body.classList.contains('edit-mode');
@@ -591,11 +569,16 @@
             if (isDark) document.body.setAttribute('data-theme', 'dark');
             else document.body.removeAttribute('data-theme');
         }
+
         systemThemeQuery.addEventListener('change', () => { if (themeState === 'system') applyTheme(); });
 
+        // ============================================
+        // 1. 初始化邏輯
+        // ============================================
         function initLanguageUI() {
             const langOptions = document.querySelectorAll('#lang-options .option');
             let selectedText = '';
+            
             langOptions.forEach(opt => {
                 if(opt.getAttribute('data-value') === currentLang) {
                     opt.classList.add('selected');
@@ -604,17 +587,26 @@
                     opt.classList.remove('selected');
                 }
             });
-            if(selectedText) document.getElementById('current-lang-text').innerText = selectedText;
+            
+            if(selectedText) {
+                document.getElementById('current-lang-text').innerText = selectedText;
+            }
+            
             updateInterfaceLanguage(false);
         }
 
+        // ============================================
+        // 2. 介面動態管理 (Rows UI State)
+        // ============================================
         let currentMode = 'sum';
+
         function setMode(mode) {
             currentMode = mode;
             document.body.setAttribute('data-mode', mode);
             if(document.getElementById('result-area').style.display !== 'none') calculate(false);
         }
 
+        // Custom Operator Select Logic (Updated v35)
         function initOperatorSelect(customSelect) {
             const trigger = customSelect.querySelector('.select-trigger');
             const optionsContainer = customSelect.querySelector('.select-options');
@@ -623,24 +615,18 @@
 
             trigger.addEventListener('click', (e) => {
                 e.stopPropagation();
-                // Close all others
                 document.querySelectorAll('.select-options').forEach(el => { 
                     if(el !== optionsContainer) {
                         el.classList.remove('open');
-                        // Remove z-index boost from other rows
                         const row = el.closest('.fraction-row');
                         if(row) row.classList.remove('z-elevated');
                     }
                 });
-                
                 optionsContainer.classList.toggle('open');
                 
-                // Toggle Z-Index Elevation for the parent row
                 if (optionsContainer.classList.contains('open')) {
                     parentRow.classList.add('z-elevated');
-                    // Smart Positioning Logic
                     const rect = trigger.getBoundingClientRect();
-                    // Estimate dropdown height (~4 items * 40px + padding) -> approx 180px
                     const dropdownHeight = 180; 
                     const spaceBelow = window.innerHeight - rect.bottom;
                     
@@ -668,6 +654,66 @@
                 });
             });
         }
+
+        // --- GLOBAL KEYBOARD LISTENER ---
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                document.querySelectorAll('.select-options.open').forEach(el => {
+                    el.classList.remove('open');
+                    const row = el.closest('.fraction-row');
+                    if(row) row.classList.remove('z-elevated');
+                });
+                if (controlsGroup.classList.contains('show')) {
+                    controlsGroup.classList.remove('show');
+                    mobileSettingsBtn.classList.remove('active');
+                }
+                if (document.body.classList.contains('edit-mode')) toggleEditMode();
+                return;
+            }
+
+            const openMenu = document.querySelector('.select-options.open');
+            if (openMenu) {
+                const options = [...openMenu.querySelectorAll('.option')];
+                const currentIndex = options.findIndex(opt => opt.classList.contains('key-active'));
+                
+                if (e.key === 'ArrowDown') {
+                    e.preventDefault();
+                    const nextIndex = (currentIndex + 1) % options.length;
+                    options.forEach(o => o.classList.remove('key-active'));
+                    options[nextIndex].classList.add('key-active');
+                    return;
+                }
+                if (e.key === 'ArrowUp') {
+                    e.preventDefault();
+                    const prevIndex = (currentIndex - 1 + options.length) % options.length;
+                    options.forEach(o => o.classList.remove('key-active'));
+                    options[prevIndex].classList.add('key-active');
+                    return;
+                }
+                if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    const activeOption = options[currentIndex !== -1 ? currentIndex : 0]; 
+                    if (activeOption) activeOption.click();
+                    const wrapper = openMenu.closest('.custom-select');
+                    if(wrapper) wrapper.querySelector('.select-trigger').focus();
+                    return;
+                }
+            }
+
+            if (e.key === 'Enter' && e.shiftKey) {
+                e.preventDefault();
+                addFraction();
+                const rows = document.querySelectorAll('.fraction-row');
+                const lastRow = rows[rows.length - 1];
+                if(lastRow) lastRow.querySelector('.num-input').focus();
+                return;
+            }
+
+            if (e.key === 'Enter' && !e.shiftKey && e.target.tagName === 'INPUT') {
+                if(e.isComposing) return; 
+                calculate(true);
+            }
+        });
 
         function createRowHTML(defNum, defDen) {
             const div = document.createElement('div');
